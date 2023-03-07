@@ -296,6 +296,42 @@
     <string/>
    </property>
   </widget>
+  <widget class="QLabel" name="imgBackCard">
+   <property name="geometry">
+    <rect>
+     <x>680</x>
+     <y>200</y>
+     <width>100</width>
+     <height>170</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <zorder>imgBackCard</zorder>
+  <zorder>pushButton</zorder>
+  <zorder>pushButton_2</zorder>
+  <zorder>pushButton_3</zorder>
+  <zorder>labelDealer</zorder>
+  <zorder>label_2</zorder>
+  <zorder>labelPlayer</zorder>
+  <zorder>label_4</zorder>
+  <zorder>imgPlayer1</zorder>
+  <zorder>imgPlayer2</zorder>
+  <zorder>imgPlayer5</zorder>
+  <zorder>imgPlayer3</zorder>
+  <zorder>imgPlayer6</zorder>
+  <zorder>imgPlayer4</zorder>
+  <zorder>imgDealer4</zorder>
+  <zorder>imgDealer3</zorder>
+  <zorder>imgDealer1</zorder>
+  <zorder>imgDealer5</zorder>
+  <zorder>imgDealer6</zorder>
+  <zorder>imgDealer2</zorder>
  </widget>
  <resources/>
  <connections/>

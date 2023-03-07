@@ -59,7 +59,7 @@
     </qresource>
     <qresource prefix="/backSide">
         <file>Assets/card back black.png</file>
-        <file>Assets/card back blue.png</file>
+        <file>Assets/blue.png</file>
         <file>Assets/card back green.png</file>
     </qresource>
     <qresource prefix="/card1">

@@ -8,23 +8,24 @@ class Card
     bool isActive;
     bool cardBack;
     int cardNum;
+    QString cardType;
     int numOfPoints;
 
 public:
-    Card(int cardNum, bool cardBack){
+    Card(int cardNum, QString cardType, bool cardBack){
         this ->isActive = true;
         this ->cardBack = cardBack;
 
+        this ->cardType = cardType;
         this ->cardNum = cardNum;
         this ->numOfPoints = giveNumOfPointsForCard(cardNum);
-    }
-    QString getNumOfPointsQString(){
-        return QString::number(numOfPoints);
     }
 
     int getNumOfPointsInt(){
         return numOfPoints;
     }
+
+
 
 private:
     int giveNumOfPointsForCard(int cardNum){
