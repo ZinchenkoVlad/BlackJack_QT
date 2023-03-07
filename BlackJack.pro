@@ -14,6 +14,7 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    card.h \
     game.h \
     mainwindow.h
 
@@ -21,7 +22,16 @@ FORMS += \
     game.ui \
     mainwindow.ui
 
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    Assets/card back black.png \
+    Assets/card back blue.png \
+    Assets/card back green.png
+
+RESOURCES += \
+    Cards.qrc
