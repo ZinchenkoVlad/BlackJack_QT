@@ -3,13 +3,13 @@
 
 #include <QPropertyAnimation>
 #include <QDialog>
-#include <tuple>
-#include <list>
-#include <QRandomGenerator>
 #include "ui_game.h"
 #include "card.h"
+#include <list>
+#include <QRandomGenerator>
 
 using namespace std;
+
 
 namespace Ui {
 class Game;
@@ -18,11 +18,10 @@ class Game;
 class Game : public QDialog
 {
     Q_OBJECT
-    list<QString> listOfCardsOnDesk = {};
-    bool firstTime = true;
 
-    QString path1 = "card1/";
-    QString path2 = "png1/";
+    bool firstTime = true;
+    list<QString> listOfCardsOnDesk = {};
+
 
 public:
     explicit Game(QWidget *parent = nullptr);
@@ -36,6 +35,11 @@ private slots:
         anim->setStartValue(QRect(680, 200, 100, 170));
         anim->setEndValue(QRect(x, y, 100, 170));
         anim->start();
+    }
+
+    void getNewCardForPlayer(Card* temp, QLabel* button){
+        QPixmap pix3(temp->getPathToCardImg());
+        button -> setPixmap(pix3.scaled(100, 170));
     }
 
     void animationStart(){
@@ -54,6 +58,9 @@ private slots:
 
     }
 
+
+
+
     bool checkForUniqueness(int cardNum, QString cardType){
         QString str = QString::number(cardNum) + cardType;
 
@@ -66,6 +73,7 @@ private slots:
 
         return true;
     }
+
 
     tuple <QString, QString> randomCardGenerator(){
         QString str;
@@ -90,27 +98,20 @@ private slots:
                     break;
             }
 
-            if (!firstTime){
-                flag = checkForUniqueness(val, str);
-            }
-            else {  // fot first card
-                firstTime = !firstTime;
+            if (firstTime){
+                firstTime = false;
                 flag = false;
+            }
+            else {  // for first card
+                flag = checkForUniqueness(val, str);
             }
         }while(!flag);
 
-        listOfCardsOnDesk.push_back(QString::number(val) + str); // if is valid
+        listOfCardsOnDesk.push_back(QString::number(val) + str);
 
         return {QString::number(val), str};
     }
 
-    QString pathToImageCreator(QString s2, QString s4){
-        auto [x, y] = randomCardGenerator();
-
-        QString result = ":/" + s2 + "Assets/" + s4 + x + "_of_" + y + ".png";
-
-        return result;
-    }
 
 
 
