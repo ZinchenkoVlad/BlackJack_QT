@@ -2,9 +2,13 @@
 #define CARD_H
 
 #include <iostream>
+#include <list>
+
+using namespace std;
 
 class Card
 {
+    list<QString> listOfCardsOnDesk = {};
     bool isActive;
     bool cardBack;
     int cardNum;
@@ -23,6 +27,19 @@ public:
 
     int getNumOfPointsInt(){
         return numOfPoints;
+    }
+
+    bool checkForUniqueness(int cardNum, QString cardType){
+        QString str = QString::number(cardNum) + cardType;
+
+        //check list
+        for (auto it = listOfCardsOnDesk.begin(); it != listOfCardsOnDesk.end(); ++it){
+                if(*it == str){
+                    return false;
+                }
+        }
+
+        return true;
     }
 
 
