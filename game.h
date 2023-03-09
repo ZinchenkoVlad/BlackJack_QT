@@ -7,6 +7,7 @@
 #include "card.h"
 #include <list>
 #include <QRandomGenerator>
+#include "Player.h"
 
 using namespace std;
 
@@ -20,7 +21,7 @@ class Game : public QDialog
     Q_OBJECT
 
     bool firstTime = true;
-    list<QString> listOfCardsOnDesk = {};
+    list<QString> listOfUsedCards = {};
 
 
 public:
@@ -42,6 +43,11 @@ private slots:
         button -> setPixmap(pix3.scaled(100, 170));
     }
 
+    void changePointsForPlayer(Player* player, Card* temp, QLabel* label){
+        player->setAmountOfPoints(temp->giveNumOfPointsForCard(player->getAmountOfPoints().toInt()));
+        label->setText(player->getAmountOfPoints());
+    }
+
     void animationStart(){
         animation1  = new QPropertyAnimation(ui->imgPlayer1, "geometry");
         animation2  = new QPropertyAnimation(ui->imgPlayer2, "geometry");
@@ -55,20 +61,18 @@ private slots:
         animation24 = new QPropertyAnimation(ui->imgDealer4, "geometry");
         animation25 = new QPropertyAnimation(ui->imgDealer5, "geometry");
         animation26 = new QPropertyAnimation(ui->imgDealer6, "geometry");
-
     }
 
 
 
 
-    bool checkForUniqueness(int cardNum, QString cardType){
-        QString str = QString::number(cardNum) + cardType;
+    bool checkForUniqueness(QString card){
 
         //check list
-        for (auto it = listOfCardsOnDesk.begin(); it != listOfCardsOnDesk.end(); ++it){
-                if(*it == str){
-                    return false;
-                }
+        for (auto it = listOfUsedCards.begin(); it != listOfUsedCards.end(); ++it){
+            if(*it == card){
+                return false;
+            }
         }
 
         return true;
@@ -76,43 +80,34 @@ private slots:
 
 
     tuple <QString, QString> randomCardGenerator(){
-        QString str;
-        int val, x;
-        bool flag; // for uniqueness do while
+        QString cardType;
+        QString cardNum;
+        bool flagExitFromLoop = true; // for uniqueness do while
 
         do{
-            val = QRandomGenerator::global()->bounded(2, 15); // generate a random number between 2 and 14 (inclusive)
-            x = QRandomGenerator::global()->bounded(1, 5);
-            switch (x) {
-                case 1:
-                    str = "clubs";
-                    break;
-                case 2:
-                    str = "diamonds";
-                    break;
-                case 3:
-                    str = "hearts";
-                    break;
-                case 4:
-                    str = "spades";
-                    break;
+            cardNum = QString::number(QRandomGenerator::global()->bounded(2, 15)); // generate a random number between 2 and 14 (inclusive)
+
+            switch (QRandomGenerator::global()->bounded(1, 5)) {
+                case 1: cardType = "clubs"; break;
+                case 2: cardType = "diamonds"; break;
+                case 3: cardType = "hearts"; break;
+                case 4: cardType = "spades"; break;
             }
 
-            if (firstTime){
+            if (firstTime){// for first card
                 firstTime = false;
-                flag = false;
+                flagExitFromLoop = false;
             }
-            else {  // for first card
-                flag = checkForUniqueness(val, str);
+            else {
+                flagExitFromLoop = checkForUniqueness(cardNum + cardType);
             }
-        }while(!flag);
 
-        listOfCardsOnDesk.push_back(QString::number(val) + str);
+        }while(!flagExitFromLoop);
 
-        return {QString::number(val), str};
+        listOfUsedCards.push_back(cardNum + cardType);
+
+        return {cardNum, cardType};
     }
-
-
 
 
 private:

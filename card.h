@@ -1,15 +1,6 @@
 #ifndef CARD_H
 #define CARD_H
 
-#include <iostream>
-#include <tuple>
-#include <QRandomGenerator>
-#include "game.h"
-
-
-using namespace std;
-
-
 
 class Card
 {
@@ -18,7 +9,7 @@ class Card
     QString pathToCardImg;
     QString cardType;
     QString cardNum;
-    int numOfPoints;
+    int numOfCardPoints;
     bool isBackSide;
 
 public:
@@ -38,10 +29,32 @@ public:
         this->isBackSide = isBackSide;
     }
 
+    int giveNumOfPointsForCard(int playerPoints){
+        int point = 0;
+        int cardNum = this->cardNum.toInt();
 
+        switch (cardNum) {
+        case 11: point = 10; break;
+        case 12: point = 10; break;
+        case 13: point = 10; break;
+
+        default: point = cardNum; break;
+        }
+
+        if(cardNum == (int)14){
+            if(playerPoints > 10){
+                point = 1;
+            }
+            else {
+                point = 11;
+            }
+        }
+
+        return point;
+
+    }
 
 private:
-
     QString pathToImageCreator(QString s2, QString s4, bool isBackSide, QString x1 = "green"){ // s2, s4 for choosing diff image
         QString result;
         if(isBackSide){
@@ -56,27 +69,6 @@ private:
 
 
 
-
-
-    int giveNumOfPointsForCard(int cardNum){
-        int point = 0;
-
-        switch (cardNum) {
-        case 11: point = 10; break;
-        case 12: point = 10; break;
-        case 13: point = 10; break;
-
-        default: point = cardNum; break;
-        }
-
-        if(cardNum == 14){
-            // TODO
-            point = 11;
-        }
-
-        return point;
-
-    }
 };
 
 #endif // CARD_H

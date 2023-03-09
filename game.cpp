@@ -1,9 +1,13 @@
 #include "game.h"
 #include "ui_game.h"
 #include "card.h"
+#include "Player.h"
 
 using namespace std;
 
+
+Player user(200);
+Player dealer;
 
 
 
@@ -21,6 +25,8 @@ Game::Game(QWidget *parent) :
     Game::animationStart();
 
 
+
+
 // Four startup cards
     // Create startup card for players
     auto t3 = Game::randomCardGenerator();
@@ -35,17 +41,25 @@ Game::Game(QWidget *parent) :
 
     // Get 1-st startup card for player
     Game::getNewCardForPlayer(&a1, ui -> imgPlayer1);
+    Game::changePointsForPlayer(&user, &a1, ui->labelPlayer);
     Game::startAnimation(animation1, 20, 380);  // animation for player card 1
     // Get 2-nd startup card for player
     Game::getNewCardForPlayer(&a2, ui -> imgPlayer2);
+    Game::changePointsForPlayer(&user, &a2, ui->labelPlayer);
     Game::startAnimation(animation2, 130, 380); // animation for player card 2
 
     // Get 1-s startup card for dealer
     Game::getNewCardForPlayer(&a21, ui -> imgDealer1);
+    Game::changePointsForPlayer(&dealer, &a21, ui->labelDealer);
     Game::startAnimation(animation21, 20, 20);  // animation for dealer card 1
     // Get 2-nd startup card for dealer
     Game::getNewCardForPlayer(&a22, ui -> imgDealer2);
+    Game::changePointsForPlayer(&dealer, &a22, ui->labelDealer);
     Game::startAnimation(animation22, 130, 20); // animation for dealer card 2
+
+
+
+
 
 
 }
@@ -67,24 +81,28 @@ void Game::on_btnHit_clicked()
     {
         Card a3(get<0>(t3), get<1>(t3));
         Game::getNewCardForPlayer(&a3, ui -> imgPlayer3);
+        Game::changePointsForPlayer(&user, &a3, ui->labelPlayer);
         Game::startAnimation(animation3, 240, 380);
     }
     else if(countOfPressHit == 2)
     {
         Card a4(get<0>(t3), get<1>(t3));
         Game::getNewCardForPlayer(&a4, ui -> imgPlayer4);
+        Game::changePointsForPlayer(&user, &a4, ui->labelPlayer);
         Game::startAnimation(animation4, 350, 380);
     }
     else if(countOfPressHit == 3)
     {
         Card a5(get<0>(t3), get<1>(t3));
         Game::getNewCardForPlayer(&a5, ui -> imgPlayer5);
+        Game::changePointsForPlayer(&user, &a5, ui->labelPlayer);
         Game::startAnimation(animation5, 460, 380);
     }
     else if(countOfPressHit == 4)
     {
         Card a6(get<0>(t3), get<1>(t3));
         Game::getNewCardForPlayer(&a6, ui -> imgPlayer6);
+        Game::changePointsForPlayer(&user, &a6, ui->labelPlayer);
         Game::startAnimation(animation6, 570, 380);
     }
 
@@ -93,4 +111,3 @@ void Game::on_btnHit_clicked()
         ui->btnHit->setVisible(false);
     }
 }
-

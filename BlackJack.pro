@@ -14,6 +14,7 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    Player.h \
     card.h \
     game.h \
     mainwindow.h
