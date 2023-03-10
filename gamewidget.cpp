@@ -1,13 +1,13 @@
 #include "gamewidget.h"
 #include "ui_gamewidget.h" // Include the generated header file for the UI
 
+Player user(1000);
+Player dealer;
+
 GameWidget::GameWidget(QWidget *parent)
     : QWidget(parent), ui(new Ui::GameWidget), score(0)
 {
     ui->setupUi(this); // Load the UI from the .ui file
-
-    // Connect button signal to slot
-    connect(ui->playAgainButton, &QPushButton::clicked, this, &GameWidget::handlePlayAgain);
 
     // Start game
     startGame();
@@ -21,10 +21,7 @@ GameWidget::~GameWidget()
 void GameWidget::startGame()
 {
     // Reset score and enable button
-    //reset();
-
-    Player user(1000);
-    Player dealer;
+    reset();
 
     initAnimation();
 
@@ -35,8 +32,8 @@ void GameWidget::startGame()
 
     drawCard(&user, &a1, ui->labelPlayer1, ui->labelPlayerScore, animation1, 20, 380);
     drawCard(&user, &a2, ui->labelPlayer2, ui->labelPlayerScore, animation2, 130, 380);
-    drawCard(&user, &a21, ui->labelDealer1, ui->labelDealerScore, animation21, 20, 20);
-    drawCard(&user, &a22, ui->labelDealer2, ui->labelDealerScore, animation22, 130, 20);
+    drawCard(&dealer, &a21, ui->labelDealer1, ui->labelDealerScore, animation21, 20, 20);
+    drawCard(&dealer, &a22, ui->labelDealer2, ui->labelDealerScore, animation22, 130, 20);
 
 
 
@@ -49,21 +46,47 @@ void GameWidget::startGame()
 }
 
 
-void GameWidget::endGame()
-{
-    // Disable game elements and show play again button
-    ui->playAgainButton->setEnabled(true);
+void GameWidget::reset(){
+    countOfPressHit = 1;
+    ui->labelPlayer1->clear();
+    ui->labelPlayer2->clear();
+    ui->labelPlayer3->clear();
+    ui->labelPlayer4->clear();
+    ui->labelPlayer5->clear();
+    ui->labelPlayer6->clear();
+    ui->labelDealer1->clear();
+    ui->labelDealer2->clear();
+    ui->labelDealer3->clear();
+    ui->labelDealer4->clear();
+    ui->labelDealer5->clear();
+    ui->labelDealer6->clear();
 
-    // Update score label
+    user.setAmountOfPoints(0);
+    dealer.setAmountOfPoints(0);
 
-    ui->scoreLabel->setText(QString("Score: %1").arg(score));
+    ui->labelDealerScore->setText(user.getAmountOfPoints());
+    ui->labelPlayerScore->setText(user.getAmountOfPoints());
+
 }
 
-void GameWidget::handlePlayAgain()
-{
-    // Start a new game
-    startGame();
+void GameWidget::gameOver(QString text){
+
+    QMessageBox msgBox;
+    QPushButton *connectButton = msgBox.addButton(tr("Play again"), QMessageBox::ActionRole);
+    QPushButton *exitButton = msgBox.addButton(tr("Exit"), QMessageBox::ActionRole);
+    msgBox.setWindowTitle("Result:");
+    msgBox.setText(text);
+    msgBox.setInformativeText("Try again :)");
+    msgBox.exec();
+
+    if (msgBox.clickedButton() == connectButton) {
+        startGame();
+    }
+    else if (msgBox.clickedButton() == exitButton) {
+        QCoreApplication::quit();
+    }
 }
+
 
 
 void GameWidget::initAnimation(){
@@ -91,29 +114,14 @@ void GameWidget::drawCard(Player* player, Card* temp, QLabel* labelCard, QLabel*
     anim->start();
 
     // change score
-    if (temp->getIsBackSide())  player->setAmountOfPoints(0);
-    else    player->setAmountOfPoints(temp->giveNumOfPointsForCard(player->getAmountOfPoints().toInt()));
+    if (temp->getIsBackSide()){
+        player->setAmountOfPoints(0);
+
+    }
+    else{
+        player->setAmountOfPoints(temp->giveNumOfPointsForCard(player->getAmountOfPoints().toInt()));
+    }
     labelScore->setText(player->getAmountOfPoints());
-}
-
-
-
-void GameWidget::gameOver(QString text){
-
-    QMessageBox msgBox;
-    QPushButton *connectButton = msgBox.addButton(tr("Play again"), QMessageBox::ActionRole);
-    QPushButton *exitButton = msgBox.addButton(tr("Exit"), QMessageBox::ActionRole);
-    msgBox.setWindowTitle("Result:");
-    msgBox.setText(text);
-    msgBox.setInformativeText("Try again :)");
-    msgBox.exec();
-
-    if (msgBox.clickedButton() == connectButton) {
-        startGame();
-    }
-    else if (msgBox.clickedButton() == exitButton) {
-        QCoreApplication::quit();
-    }
 }
 
 std::tuple <QString, QString> GameWidget::randomCardGenerator(){
@@ -158,17 +166,57 @@ bool GameWidget::checkCardForUniqueness(QString card){
 
 
 
+void GameWidget::dealerMove(){
+//    flipBackCard();
+//    QPixmap pix(a21->getPathToCardImg());
+//    labelCard -> setPixmap(pix.scaled(100, 170));
+//    a21->pathToImageCreator();
+//    dealer.setAmountOfPoints(a21->giveNumOfPointsForCard(dealer.getAmountOfPoints().toInt()));
+//    ui->labelDealerScore->setText(dealer.getAmountOfPoints());
+    gameOver("TODO");
+}
+
+
+
 // Buttons
-void GameWidget::on_scoreBtn_clicked()
+void GameWidget::on_btnStand_clicked()
 {
-    score += score;
-    ui->scoreLabel->setText(QString::number(score));
+    ui->btnHit->setEnabled(false);
+    ui->btnStand->setEnabled(false);
 
-}
-void GameWidget::on_endBtn_clicked()
-{
-    gameOver("Win");
-    //endGame();
+    dealerMove();
 }
 
+void GameWidget::on_btnHit_clicked()
+{
+    // Draw cards for each click on HIT btn
+        if(countOfPressHit == 1)
+        {
+            Card a3(randomCardGenerator());
+            drawCard(&user, &a3, ui->labelPlayer3, ui->labelPlayerScore, animation3, 240, 380);
+        }
+        else if(countOfPressHit == 2)
+        {
+            Card a4(randomCardGenerator());
+            drawCard(&user, &a4, ui->labelPlayer4, ui->labelPlayerScore, animation4, 350, 380);
+        }
+        else if(countOfPressHit == 3)
+        {
+            Card a5(randomCardGenerator());
+            drawCard(&user, &a5, ui->labelPlayer5, ui->labelPlayerScore, animation5, 460, 380);
+        }
+        else if(countOfPressHit == 4)
+        {
+            Card a6(randomCardGenerator());
+            drawCard(&user, &a6, ui->labelPlayer6, ui->labelPlayerScore, animation6, 570, 380);
+        }
+
+        countOfPressHit++;
+        if(countOfPressHit > 4){
+            ui->btnHit->setVisible(false);
+        }
+        if (user.checkLoose()){
+            gameOver("You Loose");
+        }
+}
 

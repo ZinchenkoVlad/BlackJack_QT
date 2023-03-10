@@ -17,58 +17,6 @@
    <string notr="true">color: rgb(255, 255, 255);
 background-color: qlineargradient(spread:reflect, x1:0.09, y1:0.096, x2:0.977, y2:0.939101, stop:0 rgba(15, 111, 17, 255), stop:1 rgba(16, 166, 149, 255));</string>
   </property>
-  <widget class="QPushButton" name="playAgainButton">
-   <property name="geometry">
-    <rect>
-     <x>660</x>
-     <y>10</y>
-     <width>131</width>
-     <height>29</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>playAgainButton</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="endBtn">
-   <property name="geometry">
-    <rect>
-     <x>700</x>
-     <y>80</y>
-     <width>83</width>
-     <height>29</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>endBtn</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="scoreBtn">
-   <property name="geometry">
-    <rect>
-     <x>700</x>
-     <y>40</y>
-     <width>83</width>
-     <height>29</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>scoreBtn</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="scoreLabel">
-   <property name="geometry">
-    <rect>
-     <x>720</x>
-     <y>120</y>
-     <width>63</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>TextLabel</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="labelDealer1">
    <property name="geometry">
     <rect>
@@ -264,8 +212,8 @@ background-color: qlineargradient(spread:reflect, x1:0.09, y1:0.096, x2:0.977, y
   <widget class="QLabel" name="labelPlayerScore">
    <property name="geometry">
     <rect>
-     <x>720</x>
-     <y>410</y>
+     <x>690</x>
+     <y>380</y>
      <width>41</width>
      <height>41</height>
     </rect>
@@ -288,8 +236,8 @@ background-color: rgba(255, 255, 255, 0);</string>
   <widget class="QLabel" name="labelDealerScore">
    <property name="geometry">
     <rect>
-     <x>720</x>
-     <y>150</y>
+     <x>690</x>
+     <y>20</y>
      <width>41</width>
      <height>41</height>
     </rect>
@@ -325,6 +273,109 @@ background-color: rgba(255, 255, 255, 0);</string>
     <string/>
    </property>
   </widget>
+  <widget class="QPushButton" name="btnHit">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>260</y>
+     <width>111</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 700 12pt &quot;Segoe UI&quot;;
+color: rgb(0, 0, 0);
+background-color: rgb(103, 156, 43);</string>
+   </property>
+   <property name="text">
+    <string>HIT</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btnStand">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>260</y>
+     <width>111</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 700 12pt &quot;Segoe UI&quot;;
+color: rgb(0, 0, 0);
+background-color: rgb(103, 156, 43);</string>
+   </property>
+   <property name="text">
+    <string>STAND</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label2">
+   <property name="geometry">
+    <rect>
+     <x>710</x>
+     <y>430</y>
+     <width>71</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 700 14pt &quot;Segoe UI&quot;;
+color: rgb(106, 0, 0);
+background-color: rgba(255, 255, 255, 0);</string>
+   </property>
+   <property name="midLineWidth">
+    <number>-4</number>
+   </property>
+   <property name="text">
+    <string>Player</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label2_2">
+   <property name="geometry">
+    <rect>
+     <x>710</x>
+     <y>70</y>
+     <width>71</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 700 14pt &quot;Segoe UI&quot;;
+color: rgb(106, 0, 0);
+background-color: rgba(255, 255, 255, 0);</string>
+   </property>
+   <property name="midLineWidth">
+    <number>-4</number>
+   </property>
+   <property name="text">
+    <string>Dealer</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <zorder>btnHit</zorder>
+  <zorder>labelDealer1</zorder>
+  <zorder>labelDealer2</zorder>
+  <zorder>labelDealer3</zorder>
+  <zorder>labelDealer4</zorder>
+  <zorder>labelDealer5</zorder>
+  <zorder>labelDealer6</zorder>
+  <zorder>labelPlayer6</zorder>
+  <zorder>labelPlayer3</zorder>
+  <zorder>labelPlayer4</zorder>
+  <zorder>labelPlayer2</zorder>
+  <zorder>labelPlayer1</zorder>
+  <zorder>labelPlayer5</zorder>
+  <zorder>labelPlayerScore</zorder>
+  <zorder>labelDealerScore</zorder>
+  <zorder>labelBackSide</zorder>
+  <zorder>btnStand</zorder>
+  <zorder>label2</zorder>
+  <zorder>label2_2</zorder>
  </widget>
  <resources/>
  <connections/>

@@ -28,6 +28,9 @@ public:
 
     void setAmountOfPoints(int amountOfPoints){
         this ->amountOfPoints += amountOfPoints;
+        if(!amountOfPoints){
+            this ->amountOfPoints = amountOfPoints;
+        }
     }
 
     bool checkWin(){

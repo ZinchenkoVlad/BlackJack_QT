@@ -18,11 +18,11 @@ public:
         this ->cardType = std::get<1>(cardname);
         this ->cardNum = std::get<0>(cardname);
         this ->isBackSide = isBackSide;
-        this ->pathToCardImg = pathToImageCreator(path1, path2, isBackSide, "black");
+        this ->pathToCardImg = pathToImageCreator(path1, path2, isBackSide);
 
     }
     ~Card(){
-        qInfo() << this->getPathToCardImg();
+//        qInfo() << this->getPathToCardImg();
     }
 
     QString getPathToCardImg(){
@@ -62,11 +62,10 @@ public:
 
     }
 
-private:
-    QString pathToImageCreator(QString s2, QString s4, bool isBackSide, QString x1 = "green"){ // s2, s4 for choosing diff image
+    QString pathToImageCreator(QString s2, QString s4, bool isBackSide){ // s2, s4 for choosing diff image
         QString result;
         if(isBackSide){
-            result = ":/card3/Assets/png3/" + x1 + "_of_backside.png";
+            result = ":/back/Assets/png3/green_of_backside.png";
         }
         else{
             result = ":/" + s2 + "Assets/" + s4 + cardNum + "_of_" + cardType + ".png";
@@ -74,6 +73,7 @@ private:
 
         return result;
     }
+private:
 
 
 

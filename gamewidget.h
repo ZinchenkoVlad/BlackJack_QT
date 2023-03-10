@@ -31,19 +31,20 @@ private:
     int score;
     bool firstTime = true;
     std::list<QString> listOfUsedCards = {};
+    int countOfPressHit = 1;
 
     void startGame();
-    void endGame();
+    void reset();
     void gameOver(QString text);
     bool checkCardForUniqueness(QString card);
     std::tuple <QString, QString> randomCardGenerator();
     void drawCard(Player* player, Card* temp, QLabel* labelCard, QLabel* labelScore, QPropertyAnimation* anim, int x, int y);
     void initAnimation();
+    void dealerMove();
 
 private slots:
-    void handlePlayAgain();
-    void on_scoreBtn_clicked();
-    void on_endBtn_clicked();
+    void on_btnStand_clicked();
+    void on_btnHit_clicked();
 
 private:
     QPropertyAnimation *animation1 ;
