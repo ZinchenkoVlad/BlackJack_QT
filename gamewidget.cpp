@@ -28,6 +28,7 @@ void GameWidget::startGame()
     Card a1(randomCardGenerator());
     Card a2(randomCardGenerator());
     Card a21(randomCardGenerator(), true);
+    dealer.setPathToBackCardImg(a21.getPathToBackCardImg());
     Card a22(randomCardGenerator());
 
     drawCard(&user, &a1, ui->labelPlayer1, ui->labelPlayerScore, animation1, 20, 380);
@@ -35,16 +36,8 @@ void GameWidget::startGame()
     drawCard(&dealer, &a21, ui->labelDealer1, ui->labelDealerScore, animation21, 20, 20);
     drawCard(&dealer, &a22, ui->labelDealer2, ui->labelDealerScore, animation22, 130, 20);
 
-
-
-    // TODO: Implement game logic here
-    // ...
-
-
-    // Game is over, enable button and show score
-//    gameOver("Win");
+    // hit btn is next
 }
-
 
 void GameWidget::reset(){
     countOfPressHit = 1;
@@ -67,6 +60,9 @@ void GameWidget::reset(){
     ui->labelDealerScore->setText(user.getAmountOfPoints());
     ui->labelPlayerScore->setText(user.getAmountOfPoints());
 
+    ui->btnHit->setEnabled(true);
+    ui->btnStand->setEnabled(true);
+
 }
 
 void GameWidget::gameOver(QString text){
@@ -86,8 +82,6 @@ void GameWidget::gameOver(QString text){
         QCoreApplication::quit();
     }
 }
-
-
 
 void GameWidget::initAnimation(){
     animation1  = new QPropertyAnimation(ui->labelPlayer1, "geometry");
@@ -116,6 +110,7 @@ void GameWidget::drawCard(Player* player, Card* temp, QLabel* labelCard, QLabel*
     // change score
     if (temp->getIsBackSide()){
         player->setAmountOfPoints(0);
+        player->setAmountOfBackPoints(temp->giveNumOfPointsForCard(player->getAmountOfPoints().toInt()));
 
     }
     else{
@@ -164,16 +159,48 @@ bool GameWidget::checkCardForUniqueness(QString card){
         return true;
     }
 
-
-
 void GameWidget::dealerMove(){
-//    flipBackCard();
-//    QPixmap pix(a21->getPathToCardImg());
-//    labelCard -> setPixmap(pix.scaled(100, 170));
-//    a21->pathToImageCreator();
-//    dealer.setAmountOfPoints(a21->giveNumOfPointsForCard(dealer.getAmountOfPoints().toInt()));
-//    ui->labelDealerScore->setText(dealer.getAmountOfPoints());
-    gameOver("TODO");
+    QPixmap pix(dealer.getPathToBackCardImg());
+    ui->labelDealer1 -> setPixmap(pix.scaled(100, 170));
+
+    dealer.setAmountOfPoints(dealer.getAmountOfBackPoints());
+    ui->labelDealerScore->setText(dealer.getAmountOfPoints());
+
+    int playerScore = user.getAmountOfPoints().toInt();
+    int dealerScore = dealer.getAmountOfPoints().toInt();
+
+    int iterations = 1;
+
+    while(dealerScore < playerScore){
+        if(iterations == 1){
+            Card a23(randomCardGenerator());
+            drawCard(&dealer, &a23, ui->labelDealer3, ui->labelDealerScore, animation23, 240, 20);
+        }
+        else if(iterations == 2){
+            Card a24(randomCardGenerator());
+            drawCard(&dealer, &a24, ui->labelDealer4, ui->labelDealerScore, animation24, 350, 20);
+        }
+        else if(iterations == 3){
+            Card a25(randomCardGenerator());
+            drawCard(&dealer, &a25, ui->labelDealer5, ui->labelDealerScore, animation25, 460, 20);
+        }
+        else if(iterations == 4){
+            Card a26(randomCardGenerator());
+            drawCard(&dealer, &a26, ui->labelDealer6, ui->labelDealerScore, animation26, 570, 20);
+        }
+        else break;
+        iterations++;
+        dealerScore = dealer.getAmountOfPoints().toInt();
+    }
+    if (dealerScore > playerScore && dealerScore > 21){
+        gameOver("You WIN");
+    }
+    else if (dealerScore > playerScore && dealerScore <= 21){
+        gameOver("You Loose");
+    }
+    else if (dealerScore == playerScore){
+        gameOver("Draw");
+    }
 }
 
 
@@ -190,33 +217,33 @@ void GameWidget::on_btnStand_clicked()
 void GameWidget::on_btnHit_clicked()
 {
     // Draw cards for each click on HIT btn
-        if(countOfPressHit == 1)
-        {
-            Card a3(randomCardGenerator());
-            drawCard(&user, &a3, ui->labelPlayer3, ui->labelPlayerScore, animation3, 240, 380);
-        }
-        else if(countOfPressHit == 2)
-        {
-            Card a4(randomCardGenerator());
-            drawCard(&user, &a4, ui->labelPlayer4, ui->labelPlayerScore, animation4, 350, 380);
-        }
-        else if(countOfPressHit == 3)
-        {
-            Card a5(randomCardGenerator());
-            drawCard(&user, &a5, ui->labelPlayer5, ui->labelPlayerScore, animation5, 460, 380);
-        }
-        else if(countOfPressHit == 4)
-        {
-            Card a6(randomCardGenerator());
-            drawCard(&user, &a6, ui->labelPlayer6, ui->labelPlayerScore, animation6, 570, 380);
-        }
+    if(countOfPressHit == 1)
+    {
+        Card a3(randomCardGenerator());
+        drawCard(&user, &a3, ui->labelPlayer3, ui->labelPlayerScore, animation3, 240, 380);
+    }
+    else if(countOfPressHit == 2)
+    {
+        Card a4(randomCardGenerator());
+        drawCard(&user, &a4, ui->labelPlayer4, ui->labelPlayerScore, animation4, 350, 380);
+    }
+    else if(countOfPressHit == 3)
+    {
+        Card a5(randomCardGenerator());
+        drawCard(&user, &a5, ui->labelPlayer5, ui->labelPlayerScore, animation5, 460, 380);
+    }
+    else if(countOfPressHit == 4)
+    {
+        Card a6(randomCardGenerator());
+        drawCard(&user, &a6, ui->labelPlayer6, ui->labelPlayerScore, animation6, 570, 380);
+    }
 
-        countOfPressHit++;
-        if(countOfPressHit > 4){
-            ui->btnHit->setVisible(false);
-        }
-        if (user.checkLoose()){
-            gameOver("You Loose");
-        }
+    countOfPressHit++;
+    if(countOfPressHit > 4){
+        ui->btnHit->setVisible(false);
+    }
+    if (user.checkLoose()){
+        gameOver("You Loose");
+    }
 }
 

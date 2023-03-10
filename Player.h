@@ -6,7 +6,9 @@ class Player
 {
 public:
     int amountOfPoints;
+    int amountOfBackPoints;
     int amountOfMoney;
+    QString pathToBackCardImg;
 
     Player(int amountOfMoney = 100){
         this ->amountOfMoney = amountOfMoney;
@@ -21,6 +23,22 @@ public:
         this ->amountOfMoney += amountOfMoney;
     }
 
+    void setAmountOfBackPoints(int amountOfBackPoints){
+        this ->amountOfBackPoints = amountOfBackPoints;
+    }
+
+    void setPathToBackCardImg(QString pathToBackCardImg){
+        this ->pathToBackCardImg = pathToBackCardImg;
+    }
+
+    QString getPathToBackCardImg(){
+         return this ->pathToBackCardImg;
+    }
+
+    int getAmountOfBackPoints(){
+        return this ->amountOfBackPoints;
+    }
+
     QString getAmountOfPoints(){
 
         return QString::number(this ->amountOfPoints);
@@ -31,14 +49,6 @@ public:
         if(!amountOfPoints){
             this ->amountOfPoints = amountOfPoints;
         }
-    }
-
-    bool checkWin(){
-        if(this->amountOfPoints > 21){
-            return false;
-        }
-        else
-            return true;
     }
 
     bool checkLoose(){
