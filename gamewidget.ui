@@ -357,7 +357,32 @@ background-color: rgba(255, 255, 255, 0);</string>
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
+  <widget class="QLabel" name="labelPlayerBet">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>270</y>
+     <width>261</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 700 14pt &quot;Segoe UI&quot;;
+color: rgb(106, 0, 0);
+background-color: rgba(255, 255, 255, 0);</string>
+   </property>
+   <property name="midLineWidth">
+    <number>-4</number>
+   </property>
+   <property name="text">
+    <string>25</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
   <zorder>btnHit</zorder>
+  <zorder>btnStand</zorder>
   <zorder>labelDealer1</zorder>
   <zorder>labelDealer2</zorder>
   <zorder>labelDealer3</zorder>
@@ -373,9 +398,9 @@ background-color: rgba(255, 255, 255, 0);</string>
   <zorder>labelPlayerScore</zorder>
   <zorder>labelDealerScore</zorder>
   <zorder>labelBackSide</zorder>
-  <zorder>btnStand</zorder>
   <zorder>label2</zorder>
   <zorder>label2_2</zorder>
+  <zorder>labelPlayerBet</zorder>
  </widget>
  <resources/>
  <connections/>

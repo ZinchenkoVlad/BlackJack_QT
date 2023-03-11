@@ -1,11 +1,11 @@
 #include "gamewidget.h"
 #include "ui_gamewidget.h" // Include the generated header file for the UI
 
-Player user(1000);
+Player user(100);
 Player dealer;
 
 GameWidget::GameWidget(QWidget *parent)
-    : QWidget(parent), ui(new Ui::GameWidget), score(0)
+    : QWidget(parent), ui(new Ui::GameWidget)
 {
     ui->setupUi(this); // Load the UI from the .ui file
 
@@ -23,7 +23,7 @@ void GameWidget::startGame()
     // Reset score and enable button
     reset();
 
-    initAnimation();
+
 
     Card a1(randomCardGenerator());
     Card a2(randomCardGenerator());
@@ -36,7 +36,7 @@ void GameWidget::startGame()
     drawCard(&dealer, &a21, ui->labelDealer1, ui->labelDealerScore, animation21, 20, 20);
     drawCard(&dealer, &a22, ui->labelDealer2, ui->labelDealerScore, animation22, 130, 20);
 
-    // hit btn is next
+    // hit/stand btn is next
 }
 
 void GameWidget::reset(){
@@ -63,24 +63,9 @@ void GameWidget::reset(){
     ui->btnHit->setEnabled(true);
     ui->btnStand->setEnabled(true);
 
-}
-
-void GameWidget::gameOver(QString text){
-
-    QMessageBox msgBox;
-    QPushButton *connectButton = msgBox.addButton(tr("Play again"), QMessageBox::ActionRole);
-    QPushButton *exitButton = msgBox.addButton(tr("Exit"), QMessageBox::ActionRole);
-    msgBox.setWindowTitle("Result:");
-    msgBox.setText(text);
-    msgBox.setInformativeText("Try again :)");
-    msgBox.exec();
-
-    if (msgBox.clickedButton() == connectButton) {
-        startGame();
-    }
-    else if (msgBox.clickedButton() == exitButton) {
-        QCoreApplication::quit();
-    }
+    initAnimation();
+    makeBet();
+    ui->labelPlayerBet->setText("Your bet: " + QString::number(user.getPlayerBet()));
 }
 
 void GameWidget::initAnimation(){
@@ -98,25 +83,29 @@ void GameWidget::initAnimation(){
     animation26 = new QPropertyAnimation(ui->labelDealer6, "geometry");
 }
 
-void GameWidget::drawCard(Player* player, Card* temp, QLabel* labelCard, QLabel* labelScore, QPropertyAnimation* anim, int x, int y){
-    QPixmap pix(temp->getPathToCardImg());
-    labelCard -> setPixmap(pix.scaled(100, 170));
-
-    anim->setDuration(1000);
-    anim->setStartValue(QRect(680, 200, 100, 170));
-    anim->setEndValue(QRect(x, y, 100, 170));
-    anim->start();
-
-    // change score
-    if (temp->getIsBackSide()){
-        player->setAmountOfPoints(0);
-        player->setAmountOfBackPoints(temp->giveNumOfPointsForCard(player->getAmountOfPoints().toInt()));
-
+void GameWidget::makeBet(){
+    int playerMoney = user.getAmountOfMoney();
+    if (playerMoney == 0){
+        QMessageBox msgBox;
+        QPushButton *exitButton = msgBox.addButton(tr("Exit"), QMessageBox::ActionRole);
+        msgBox.setWindowTitle("Result:");
+        msgBox.setInformativeText("Your bank is empty.\nYou must leave.");
+        msgBox.exec();
+        QCoreApplication::quit();
+        return;
     }
-    else{
-        player->setAmountOfPoints(temp->giveNumOfPointsForCard(player->getAmountOfPoints().toInt()));
+    bool ok;
+    int playerBet = QInputDialog::getInt(this, "Make your bet",
+                                ("Your bank: " + QString::number(playerMoney)),
+                                25, 1, playerMoney, 1, &ok);
+    if(!ok)
+    {
+        makeBet();
     }
-    labelScore->setText(player->getAmountOfPoints());
+    if (ok)
+    {
+        user.setPlayerBet(playerBet);
+    }
 }
 
 std::tuple <QString, QString> GameWidget::randomCardGenerator(){
@@ -149,15 +138,36 @@ std::tuple <QString, QString> GameWidget::randomCardGenerator(){
     return {cardNum, cardType};
 }
 
-bool GameWidget::checkCardForUniqueness(QString card){
-        //check list
-        for (auto it = listOfUsedCards.begin(); it != listOfUsedCards.end(); ++it){
-            if(*it == card){
-                return false;
-            }
-        }
-        return true;
+void GameWidget::drawCard(Player* player, Card* temp, QLabel* labelCard, QLabel* labelScore, QPropertyAnimation* anim, int x, int y){
+    QPixmap pix(temp->getPathToCardImg());
+    labelCard -> setPixmap(pix.scaled(100, 170));
+
+    anim->setDuration(1000);
+    anim->setStartValue(QRect(680, 200, 100, 170));
+    anim->setEndValue(QRect(x, y, 100, 170));
+    anim->start();
+
+    // change score
+    if (temp->getIsBackSide()){
+        player->setAmountOfPoints(0);
+        player->setAmountOfBackPoints(temp->giveNumOfPointsForCard(player->getAmountOfPoints().toInt()));
+
     }
+    else{
+        player->setAmountOfPoints(temp->giveNumOfPointsForCard(player->getAmountOfPoints().toInt()));
+    }
+    labelScore->setText(player->getAmountOfPoints());
+}
+
+bool GameWidget::checkCardForUniqueness(QString card){
+    //check list
+    for (auto it = listOfUsedCards.begin(); it != listOfUsedCards.end(); ++it){
+        if(*it == card){
+            return false;
+        }
+    }
+    return true;
+}
 
 void GameWidget::dealerMove(){
     QPixmap pix(dealer.getPathToBackCardImg());
@@ -200,6 +210,31 @@ void GameWidget::dealerMove(){
     }
     else if (dealerScore == playerScore){
         gameOver("Draw");
+    }
+}
+
+void GameWidget::gameOver(QString text){
+
+    if(text == "You WIN"){
+        user.setAmountOfMoney(user.getPlayerBet());
+    }
+    else{
+        user.setAmountOfMoney(user.getPlayerBet() * -1);
+    }
+
+    QMessageBox msgBox;
+    QPushButton *connectButton = msgBox.addButton(tr("Play again"), QMessageBox::ActionRole);
+    QPushButton *exitButton = msgBox.addButton(tr("Exit"), QMessageBox::ActionRole);
+    msgBox.setWindowTitle("Result:");
+    msgBox.setText(text);
+    msgBox.setInformativeText("Your bank now is: " + QString::number(user.getAmountOfMoney()));
+    msgBox.exec();
+
+    if (msgBox.clickedButton() == connectButton) {
+        startGame();
+    }
+    else if (msgBox.clickedButton() == exitButton) {
+        QCoreApplication::quit();
     }
 }
 
