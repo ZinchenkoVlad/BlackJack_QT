@@ -39,11 +39,16 @@ void GameWidget::startGame()
     // Reset score and enable button
     reset();
     makeBet();
-    Card a1(randomCardGenerator(), path2);
-    Card a2(randomCardGenerator(), path2);
-    Card a21(randomCardGenerator(), path2, true);
+
+    Card a0(randomCardGenerator(), pathForFrontImg, pathForBackImg, true);
+    Card a1(randomCardGenerator(), pathForFrontImg);
+    Card a2(randomCardGenerator(), pathForFrontImg);
+    Card a21(randomCardGenerator(), pathForFrontImg, pathForBackImg, true);
     dealer.setPathToBackCardImg(a21.getPathToBackCardImg());
-    Card a22(randomCardGenerator(), path2);
+    Card a22(randomCardGenerator(), pathForFrontImg);
+
+    QPixmap pixa0(a0.getPathToCardImg());
+    ui->labelBackSide->setPixmap(pixa0.scaled(100, 170));
 
     drawCard(&user, &a1, ui->labelPlayer1, ui->labelPlayerScore, animation1, 20, 380);
     drawCard(&user, &a2, ui->labelPlayer2, ui->labelPlayerScore, animation2, 130, 380);
@@ -209,7 +214,7 @@ void GameWidget::dealerMove(){
 
     while(dealerScore < playerScore && iterations <= 4){
 
-        Card card(randomCardGenerator(), path2);
+        Card card(randomCardGenerator(), pathForFrontImg);
         QLabel* label;
         QPropertyAnimation* animation;
         int x;
@@ -279,6 +284,38 @@ void GameWidget::gameOver(QString text){
     }
 }
 
+void GameWidget::checkListCardFrontTypes(){
+    listCardFrontTypes.clear();
+    QString path = QDir::currentPath() + "/Assets/";
+
+    QDir directory(path);
+
+    // Get a list of all the folders in the directory
+    QStringList folders = directory.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+
+    // Add the folder names to the list
+    foreach (QString folder, folders)
+    {
+        if(folder != "back")
+            listCardFrontTypes.append(folder);
+    }
+}
+
+void GameWidget::checkListCardBackTypes(){
+    listCardBackTypes.clear();
+
+    QDir directory(QDir::currentPath() + "/Assets/back/");
+
+    directory.setFilter(QDir::Files);
+    QFileInfoList list = directory.entryInfoList();
+
+    for (int i = 0; i < list.size(); i++) {
+        QFileInfo fileInfo = list.at(i);
+        QString fileName = fileInfo.fileName();
+        listCardBackTypes.append(fileName);
+    }
+}
+
 
 
 // Buttons
@@ -296,7 +333,7 @@ void GameWidget::on_btnHit_clicked()
     soundPlayer("qrc:/sound/Assets/sound/clickButton.mp3");
 
     // Draw cards for each click on HIT btn
-    Card card(randomCardGenerator(), path2);
+    Card card(randomCardGenerator(), pathForFrontImg);
     switch(countOfPressHit){
         case 1:
             drawCard(&user, &card, ui->labelPlayer3, ui->labelPlayerScore, animation3, 240, 380);
@@ -318,21 +355,6 @@ void GameWidget::on_btnHit_clicked()
     }
 }
 
-void GameWidget::checkListCardFrontTypes(){
-    listCardFrontTypes.clear();
-    QString path = QDir::currentPath() + "/Assets/";
-
-    QDir directory(path);
-
-    // Get a list of all the folders in the directory
-    QStringList folders = directory.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
-
-    // Add the folder names to the list
-    foreach (QString folder, folders)
-    {
-        listCardFrontTypes.append(folder);
-    }
-}
 
 
 void GameWidget::on_btnAddNewSkins_clicked()
@@ -340,7 +362,9 @@ void GameWidget::on_btnAddNewSkins_clicked()
     checkListCardFrontTypes();
 
     int maxCardFolder = listCardFrontTypes.size();
-    QString creatingFolder = "png" + QString::number(maxCardFolder+1) + "/";
+    QString creatingFolder;
+    if(frontOrBack) creatingFolder = "png" + QString::number(maxCardFolder+1) + "/";
+    else            creatingFolder = "back/";
 
     // Create a file dialog to let the user select the image files
     QStringList imageFiles = QFileDialog::getOpenFileNames(this, tr("Select Images"), QString(), tr("Image Files (*.png)"));
@@ -348,61 +372,89 @@ void GameWidget::on_btnAddNewSkins_clicked()
     // Get the path of the directory where you want to save the images
     QString saveDirectory = QDir::currentPath() + "/Assets/" + creatingFolder;
 
-    // Create the directory if it doesn't exist
-    QDir().mkpath(saveDirectory);
+    if(!imageFiles.isEmpty()){
+        // Create the directory if it doesn't exist
+        QDir().mkpath(saveDirectory);
 
-    // Copy the selected files to the save directory
-    foreach(QString imagePath, imageFiles)
-    {
-        // Get the filename of the image
-        QString imageName = QFileInfo(imagePath).fileName();
-
-        // Create a QFile object for the image file
-        QFile imageFile(imagePath);
-
-        // Set the path for the output file
-        QString savePath = saveDirectory + imageName;
-
-        // Create a QFile object for the output file
-        QFile outputFile(savePath);
-
-        // Open the image file for reading
-        if (imageFile.open(QIODevice::ReadOnly))
+        // Copy the selected files to the save directory
+        foreach(QString imagePath, imageFiles)
         {
-            // Open the output file for writing
-            if (outputFile.open(QIODevice::WriteOnly))
+            // Get the filename of the image
+            QString imageName = QFileInfo(imagePath).fileName();
+
+            // Create a QFile object for the image file
+            QFile imageFile(imagePath);
+
+            // Set the path for the output file
+            QString savePath = saveDirectory + imageName;
+
+            // Create a QFile object for the output file
+            QFile outputFile(savePath);
+
+            // Open the image file for reading
+            if (imageFile.open(QIODevice::ReadOnly))
             {
-                // Copy the image data to the output file
-                outputFile.write(imageFile.readAll());
+                // Open the output file for writing
+                if (outputFile.open(QIODevice::WriteOnly))
+                {
+                    // Copy the image data to the output file
+                    outputFile.write(imageFile.readAll());
 
-                // Close the output file
-                outputFile.close();
+                    // Close the output file
+                    outputFile.close();
+                }
+
+                // Close the image file
+                imageFile.close();
             }
-
-            // Close the image file
-            imageFile.close();
         }
     }
-
-
-
 }
 
 
-
-void GameWidget::on_btnChangeSkins_clicked()
+void GameWidget::on_btnMute_clicked()
 {
-    checkListCardFrontTypes();
+    isMuted = !isMuted;
+    audioOutput1->setMuted(isMuted);
+    audioOutput->setMuted(isMuted);
+    if(!isMuted) ui->btnMute->setText("Mute");
+    else    ui->btnMute->setText("Unmute");
+}
 
+
+void GameWidget::on_btnFrontOrBack_clicked()
+{
+    frontOrBack = !frontOrBack;
+    if(frontOrBack) ui->btnFrontOrBack->setText("Front");
+    else    ui->btnFrontOrBack->setText("Back");
+}
+
+
+void GameWidget::on_btnChangeBack_clicked()
+{
+    checkListCardBackTypes();
     bool ok;
 
-        QString item = QInputDialog::getItem(this, tr("QInputDialog::getItem()"),
-                                            tr("Card Types:"), listCardFrontTypes, 0, false, &ok);
+    QString item = QInputDialog::getItem(this, tr("QInputDialog::getItem()"),
+                                        tr("Card Types:"), listCardBackTypes, 0, false, &ok);
 
-        if (ok && !item.isEmpty()){
+    if (ok && !item.isEmpty()){
+        pathForBackImg = "back/" + item;
+        qInfo() << pathForBackImg;
+    }
+}
 
-            path2 = "png" + QString::number(listCardFrontTypes.indexOf(item)+1);
 
-        }
+void GameWidget::on_btnChangeFront_clicked()
+{
+    checkListCardFrontTypes();
+    bool ok;
+
+    QString item = QInputDialog::getItem(this, tr("QInputDialog::getItem()"),
+                                        tr("Card Types:"), listCardFrontTypes, 0, false, &ok);
+
+    if (ok && !item.isEmpty()){
+        pathForFrontImg = "png" + QString::number(listCardFrontTypes.indexOf(item)+1);
+    }
 }
 

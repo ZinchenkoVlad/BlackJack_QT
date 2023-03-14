@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>900</width>
     <height>600</height>
    </rect>
   </property>
@@ -213,7 +213,7 @@ background-color: qlineargradient(spread:reflect, x1:0.09, y1:0.096, x2:0.977, y
    <property name="geometry">
     <rect>
      <x>690</x>
-     <y>380</y>
+     <y>420</y>
      <width>41</width>
      <height>41</height>
     </rect>
@@ -313,7 +313,7 @@ background-color: rgb(103, 156, 43);</string>
    <property name="geometry">
     <rect>
      <x>710</x>
-     <y>430</y>
+     <y>470</y>
      <width>71</width>
      <height>41</height>
     </rect>
@@ -381,30 +381,96 @@ background-color: rgba(255, 255, 255, 0);</string>
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
+  <widget class="QRadioButton" name="btnMute">
+   <property name="geometry">
+    <rect>
+     <x>810</x>
+     <y>570</y>
+     <width>91</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(40, 40, 40, 0);</string>
+   </property>
+   <property name="text">
+    <string>Mute</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>25</width>
+     <height>25</height>
+    </size>
+   </property>
+  </widget>
   <widget class="QPushButton" name="btnAddNewSkins">
    <property name="geometry">
     <rect>
-     <x>680</x>
-     <y>190</y>
+     <x>820</x>
+     <y>230</y>
      <width>83</width>
      <height>29</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(56, 56, 56);</string>
    </property>
    <property name="text">
     <string>Add new</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btnChangeSkins">
+  <widget class="QPushButton" name="btnChangeFront">
    <property name="geometry">
     <rect>
-     <x>680</x>
-     <y>260</y>
+     <x>810</x>
+     <y>270</y>
      <width>91</width>
      <height>29</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(56, 56, 56);</string>
+   </property>
    <property name="text">
-    <string>Change now</string>
+    <string>Change front</string>
+   </property>
+  </widget>
+  <widget class="QRadioButton" name="btnFrontOrBack">
+   <property name="geometry">
+    <rect>
+     <x>830</x>
+     <y>200</y>
+     <width>71</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(40, 40, 40, 0);</string>
+   </property>
+   <property name="text">
+    <string>Front</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>25</width>
+     <height>25</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btnChangeBack">
+   <property name="geometry">
+    <rect>
+     <x>810</x>
+     <y>310</y>
+     <width>91</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(56, 56, 56);</string>
+   </property>
+   <property name="text">
+    <string>Change back</string>
    </property>
   </widget>
   <zorder>btnHit</zorder>
@@ -427,8 +493,11 @@ background-color: rgba(255, 255, 255, 0);</string>
   <zorder>label2</zorder>
   <zorder>label2_2</zorder>
   <zorder>labelPlayerBet</zorder>
+  <zorder>btnMute</zorder>
   <zorder>btnAddNewSkins</zorder>
-  <zorder>btnChangeSkins</zorder>
+  <zorder>btnChangeFront</zorder>
+  <zorder>btnFrontOrBack</zorder>
+  <zorder>btnChangeBack</zorder>
  </widget>
  <resources/>
  <connections/>

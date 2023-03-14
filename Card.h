@@ -7,20 +7,22 @@ class Card
 {
 
 public:
-    Card(std::tuple <QString, QString> cardname, bool isBackSide = false){
+
+    Card(std::tuple <QString, QString> cardname, QString globalPathCard, bool isBackSide = false){
         this ->cardType = std::get<1>(cardname);
         this ->cardNum = std::get<0>(cardname);
         this ->isBackSide = isBackSide;
-        this ->pathToCardImg = pathToImageCreator(path2, isBackSide);
-
+        this ->globalPathCard = globalPathCard;
+        this ->pathToCardImg = pathToImageCreator(globalPathCard, isBackSide);
     }
 
-    Card(std::tuple <QString, QString> cardname, QString path2, bool isBackSide = false){
+    Card(std::tuple <QString, QString> cardname, QString globalPathCard, QString globalPathBackCard, bool isBackSide = false){
         this ->cardType = std::get<1>(cardname);
         this ->cardNum = std::get<0>(cardname);
         this ->isBackSide = isBackSide;
-        this ->path2 = path2;
-        this ->pathToCardImg = pathToImageCreator(path2, isBackSide);
+        this ->globalPathCard = globalPathCard;
+        this ->globalPathBackCard = globalPathBackCard;
+        this ->pathToCardImg = pathToImageCreator(globalPathCard, isBackSide, globalPathBackCard);
     }
 
 
@@ -62,37 +64,36 @@ public:
 
 
 private:
-    QString path2 = "png1/";
+    QString globalPathCard = "png1/";
+    QString globalPathBackCard = "back/";
 
     QString pathToCardImg;
     QString pathToBackCardImg;
     QString cardType;
     QString cardNum;
 
-
     int numOfCardPoints;
     bool isBackSide;
     int numOfBackCardPoints;
 
 
-    QString pathToImageCreator(QString s4, bool isBackSide){ // s2, s4 for choosing diff image
-        qInfo() << s4;
+    QString pathToImageCreator(QString path, bool isBackSide, QString path2 = ""){
+
         QString result;
+        QString saveDirectory = QDir::currentPath() + "/Assets/" + path + "/";
+        QString saveDirectory1 = QDir::currentPath() + "/Assets/" + path2;
+
         if(isBackSide){
-            result = ":/back/Assets/png3/green_of_backside.png";
-            this->pathToBackCardImg = "://Assets/" + s4 + cardNum + "_of_" + cardType + ".png";
+            this->pathToBackCardImg = saveDirectory + cardNum + "_of_" + cardType + ".png";
+            result = saveDirectory1;
+            qInfo() <<"/nInside card/t"<< result;
         }
         else{
-//            result = "://Assets/" + s4 + cardNum + "_of_" + cardType + ".png";
-            QString saveDirectory = QDir::currentPath() + "/Assets/" + s4 + "/";
+            saveDirectory = QDir::currentPath() + "/Assets/" + path + "/";
             result = saveDirectory + cardNum + "_of_" + cardType + ".png";
         }
-
         return result;
     }
-
-
-
 
 };
 
