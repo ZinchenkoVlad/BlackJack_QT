@@ -112,4 +112,9 @@
         <file>Assets/png3/blue_of_backside.png</file>
         <file>Assets/png3/green_of_backside.png</file>
     </qresource>
+    <qresource prefix="/sound">
+        <file>Assets/sound/clickButton.mp3</file>
+        <file>Assets/sound/flipCard.mp3</file>
+        <file>Assets/sound/backGround.mp3</file>
+    </qresource>
 </RCC>

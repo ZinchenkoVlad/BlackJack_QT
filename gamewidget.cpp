@@ -9,32 +9,47 @@ GameWidget::GameWidget(QWidget *parent)
 {
     ui->setupUi(this); // Load the UI from the .ui file
 
-    // Start game
+    //soundPlayer();
+    backgroundMusic = new QMediaPlayer;
+    audioOutput1 = new QAudioOutput;
+
+    backgroundMusic->setAudioOutput(audioOutput1);
+    backgroundMusic->setSource(QUrl::fromLocalFile("qrc:/sound/Assets/sound/backGround.mp3"));
+    audioOutput1->setVolume(50);
+
+    backgroundMusic->setLoops(QMediaPlayer::Infinite);
+    backgroundMusic->play();
+
+
+
     startGame();
 }
 
 GameWidget::~GameWidget()
 {
     delete ui;
+    delete backgroundMusic;
+    delete audioOutput1;
+    delete music;
+    delete audioOutput;
 }
 
 void GameWidget::startGame()
 {
     // Reset score and enable button
     reset();
-
-
-
-    Card a1(randomCardGenerator());
-    Card a2(randomCardGenerator());
-    Card a21(randomCardGenerator(), true);
+    makeBet();
+    Card a1(randomCardGenerator(), path2);
+    Card a2(randomCardGenerator(), path2);
+    Card a21(randomCardGenerator(), path2, true);
     dealer.setPathToBackCardImg(a21.getPathToBackCardImg());
-    Card a22(randomCardGenerator());
+    Card a22(randomCardGenerator(), path2);
 
     drawCard(&user, &a1, ui->labelPlayer1, ui->labelPlayerScore, animation1, 20, 380);
     drawCard(&user, &a2, ui->labelPlayer2, ui->labelPlayerScore, animation2, 130, 380);
     drawCard(&dealer, &a21, ui->labelDealer1, ui->labelDealerScore, animation21, 20, 20);
     drawCard(&dealer, &a22, ui->labelDealer2, ui->labelDealerScore, animation22, 130, 20);
+
 
     // hit/stand btn is next
 }
@@ -57,15 +72,16 @@ void GameWidget::reset(){
     user.setAmountOfPoints(0);
     dealer.setAmountOfPoints(0);
 
-    ui->labelDealerScore->setText(user.getAmountOfPoints());
-    ui->labelPlayerScore->setText(user.getAmountOfPoints());
+    ui->labelDealerScore->setText(QString::number(user.getAmountOfPoints()));
+    ui->labelPlayerScore->setText(QString::number(user.getAmountOfPoints()));
 
     ui->btnHit->setEnabled(true);
     ui->btnStand->setEnabled(true);
 
     initAnimation();
-    makeBet();
+
     ui->labelPlayerBet->setText("Your bet: " + QString::number(user.getPlayerBet()));
+
 }
 
 void GameWidget::initAnimation(){
@@ -83,62 +99,70 @@ void GameWidget::initAnimation(){
     animation26 = new QPropertyAnimation(ui->labelDealer6, "geometry");
 }
 
+void GameWidget::soundPlayer(QString path){
+    music = new QMediaPlayer;
+    audioOutput = new QAudioOutput;
+    music->setAudioOutput(audioOutput);
+    music->setSource(QUrl::fromLocalFile(path));
+    audioOutput->setVolume(50);
+    music->play();
+}
+
 void GameWidget::makeBet(){
+
     int playerMoney = user.getAmountOfMoney();
-    if (playerMoney == 0){
-        QMessageBox msgBox;
-        QPushButton *exitButton = msgBox.addButton(tr("Exit"), QMessageBox::ActionRole);
-        msgBox.setWindowTitle("Result:");
-        msgBox.setInformativeText("Your bank is empty.\nYou must leave.");
-        msgBox.exec();
+
+    QInputDialog dialog(this);
+    dialog.setWindowTitle("Make your bet");
+    dialog.setLabelText("Make your bet\nYour bank: " + QString::number(playerMoney));
+    dialog.setInputMode(QInputDialog::IntInput);
+    dialog.setIntRange(1, playerMoney);
+    dialog.setIntStep(1);
+    dialog.setIntValue(playerStartupBet);
+    dialog.setOkButtonText("OK");
+    dialog.setCancelButtonText("Exit");
+
+    // Show the dialog and get the user's bet
+    bool ok = dialog.exec();
+    int playerBet = dialog.intValue();
+    if (ok) {
+        if (playerMoney == 0) {
+            QMessageBox msgBox;
+            msgBox.setWindowTitle("Result:");
+            msgBox.setInformativeText("Your bank is empty.\nYou must leave.");
+            msgBox.exec();
+            QCoreApplication::quit();
+            return;
+        }
+        else {
+            user.setPlayerBet(playerBet);
+            playerStartupBet = playerBet;
+        }
+    }
+    else {
         QCoreApplication::quit();
-        return;
     }
-    bool ok;
-    int playerBet = QInputDialog::getInt(this, "Make your bet",
-                                ("Your bank: " + QString::number(playerMoney)),
-                                25, 1, playerMoney, 1, &ok);
-    if(!ok)
-    {
-        makeBet();
-    }
-    if (ok)
-    {
-        user.setPlayerBet(playerBet);
-    }
+
 }
 
 std::tuple <QString, QString> GameWidget::randomCardGenerator(){
-    QString cardType;
+    static const QStringList cardTypes = {"clubs", "diamonds", "hearts", "spades"};
     QString cardNum;
-    bool flagExitFromLoop = true; // for uniqueness do while
+    QString cardType;
 
-    do{
-        cardNum = QString::number(QRandomGenerator::global()->bounded(2, 15)); // generate a random number between 2 and 14 (inclusive)
-
-        switch (QRandomGenerator::global()->bounded(1, 5)) {
-            case 1: cardType = "clubs"; break;
-            case 2: cardType = "diamonds"; break;
-            case 3: cardType = "hearts"; break;
-            case 4: cardType = "spades"; break;
-        }
-
-        if (firstTime){// for first card
-            firstTime = false;
-            flagExitFromLoop = false;
-        }
-        else {
-            flagExitFromLoop = checkCardForUniqueness(cardNum + cardType);
-        }
-
-    }while(!flagExitFromLoop);
+    QSet<QString> usedCards(listOfUsedCards.begin(), listOfUsedCards.end());
+    do {
+        cardNum = QString::number(QRandomGenerator::global()->bounded(2, 15));
+        cardType = cardTypes[QRandomGenerator::global()->bounded(0, 4)];
+    } while (usedCards.contains(cardNum + cardType));
 
     listOfUsedCards.push_back(cardNum + cardType);
-
     return {cardNum, cardType};
 }
 
 void GameWidget::drawCard(Player* player, Card* temp, QLabel* labelCard, QLabel* labelScore, QPropertyAnimation* anim, int x, int y){
+
+
     QPixmap pix(temp->getPathToCardImg());
     labelCard -> setPixmap(pix.scaled(100, 170));
 
@@ -150,23 +174,23 @@ void GameWidget::drawCard(Player* player, Card* temp, QLabel* labelCard, QLabel*
     // change score
     if (temp->getIsBackSide()){
         player->setAmountOfPoints(0);
-        player->setAmountOfBackPoints(temp->giveNumOfPointsForCard(player->getAmountOfPoints().toInt()));
-
+        player->setAmountOfBackPoints(temp->giveNumOfPointsForCard(player->getAmountOfPoints()));
     }
     else{
-        player->setAmountOfPoints(temp->giveNumOfPointsForCard(player->getAmountOfPoints().toInt()));
+        player->setAmountOfPoints(temp->giveNumOfPointsForCard(player->getAmountOfPoints()));
     }
-    labelScore->setText(player->getAmountOfPoints());
+
+    labelScore->setText(QString::number(player->getAmountOfPoints()));
+    soundPlayer("qrc:/sound/Assets/sound/flipCard.mp3");
 }
 
-bool GameWidget::checkCardForUniqueness(QString card){
-    //check list
-    for (auto it = listOfUsedCards.begin(); it != listOfUsedCards.end(); ++it){
-        if(*it == card){
-            return false;
-        }
-    }
-    return true;
+void GameWidget::timer(int time = 900){
+    QTimer timer;
+    timer.setInterval(time);
+    QEventLoop loop;
+    connect(&timer, SIGNAL(timeout()), &loop, SLOT(quit()));
+    timer.start();
+    loop.exec();
 }
 
 void GameWidget::dealerMove(){
@@ -174,39 +198,56 @@ void GameWidget::dealerMove(){
     ui->labelDealer1 -> setPixmap(pix.scaled(100, 170));
 
     dealer.setAmountOfPoints(dealer.getAmountOfBackPoints());
-    ui->labelDealerScore->setText(dealer.getAmountOfPoints());
+    ui->labelDealerScore->setText(QString::number(dealer.getAmountOfPoints()));
 
-    int playerScore = user.getAmountOfPoints().toInt();
-    int dealerScore = dealer.getAmountOfPoints().toInt();
+    timer();
+
+    int playerScore = user.getAmountOfPoints();
+    int dealerScore = dealer.getAmountOfPoints();
 
     int iterations = 1;
 
-    while(dealerScore < playerScore){
-        if(iterations == 1){
-            Card a23(randomCardGenerator());
-            drawCard(&dealer, &a23, ui->labelDealer3, ui->labelDealerScore, animation23, 240, 20);
+    while(dealerScore < playerScore && iterations <= 4){
+
+        Card card(randomCardGenerator(), path2);
+        QLabel* label;
+        QPropertyAnimation* animation;
+        int x;
+
+        switch(iterations){
+            case 1:
+                label = ui->labelDealer3;
+                animation = animation23;
+                x = 240;
+                break;
+            case 2:
+                label = ui->labelDealer4;
+                animation = animation24;
+                x = 350;
+                break;
+            case 3:
+                label = ui->labelDealer5;
+                animation = animation25;
+                x = 460;
+                break;
+            case 4:
+                label = ui->labelDealer6;
+                animation = animation26;
+                x = 570;
+                break;
         }
-        else if(iterations == 2){
-            Card a24(randomCardGenerator());
-            drawCard(&dealer, &a24, ui->labelDealer4, ui->labelDealerScore, animation24, 350, 20);
-        }
-        else if(iterations == 3){
-            Card a25(randomCardGenerator());
-            drawCard(&dealer, &a25, ui->labelDealer5, ui->labelDealerScore, animation25, 460, 20);
-        }
-        else if(iterations == 4){
-            Card a26(randomCardGenerator());
-            drawCard(&dealer, &a26, ui->labelDealer6, ui->labelDealerScore, animation26, 570, 20);
-        }
-        else break;
+
+        drawCard(&dealer, &card, label, ui->labelDealerScore, animation, x, 20);
+        dealerScore = dealer.getAmountOfPoints();
         iterations++;
-        dealerScore = dealer.getAmountOfPoints().toInt();
+        timer();
     }
+
     if (dealerScore > playerScore && dealerScore > 21){
         gameOver("You WIN");
     }
     else if (dealerScore > playerScore && dealerScore <= 21){
-        gameOver("You Loose");
+        gameOver("You Lose");
     }
     else if (dealerScore == playerScore){
         gameOver("Draw");
@@ -218,7 +259,7 @@ void GameWidget::gameOver(QString text){
     if(text == "You WIN"){
         user.setAmountOfMoney(user.getPlayerBet());
     }
-    else{
+    else if (text == "You Lose"){
         user.setAmountOfMoney(user.getPlayerBet() * -1);
     }
 
@@ -243,6 +284,7 @@ void GameWidget::gameOver(QString text){
 // Buttons
 void GameWidget::on_btnStand_clicked()
 {
+    soundPlayer("qrc:/sound/Assets/sound/clickButton.mp3");
     ui->btnHit->setEnabled(false);
     ui->btnStand->setEnabled(false);
 
@@ -251,34 +293,117 @@ void GameWidget::on_btnStand_clicked()
 
 void GameWidget::on_btnHit_clicked()
 {
+    soundPlayer("qrc:/sound/Assets/sound/clickButton.mp3");
+
     // Draw cards for each click on HIT btn
-    if(countOfPressHit == 1)
-    {
-        Card a3(randomCardGenerator());
-        drawCard(&user, &a3, ui->labelPlayer3, ui->labelPlayerScore, animation3, 240, 380);
-    }
-    else if(countOfPressHit == 2)
-    {
-        Card a4(randomCardGenerator());
-        drawCard(&user, &a4, ui->labelPlayer4, ui->labelPlayerScore, animation4, 350, 380);
-    }
-    else if(countOfPressHit == 3)
-    {
-        Card a5(randomCardGenerator());
-        drawCard(&user, &a5, ui->labelPlayer5, ui->labelPlayerScore, animation5, 460, 380);
-    }
-    else if(countOfPressHit == 4)
-    {
-        Card a6(randomCardGenerator());
-        drawCard(&user, &a6, ui->labelPlayer6, ui->labelPlayerScore, animation6, 570, 380);
+    Card card(randomCardGenerator(), path2);
+    switch(countOfPressHit){
+        case 1:
+            drawCard(&user, &card, ui->labelPlayer3, ui->labelPlayerScore, animation3, 240, 380);
+            break;
+        case 2:
+            drawCard(&user, &card, ui->labelPlayer4, ui->labelPlayerScore, animation4, 350, 380);
+            break;
+        case 3:
+            drawCard(&user, &card, ui->labelPlayer5, ui->labelPlayerScore, animation5, 460, 380);
+            break;
+        case 4:
+            drawCard(&user, &card, ui->labelPlayer6, ui->labelPlayerScore, animation6, 570, 380);
+            break;
     }
 
     countOfPressHit++;
-    if(countOfPressHit > 4){
-        ui->btnHit->setVisible(false);
+    if (user.checkLose()){
+        gameOver("You Lose");
     }
-    if (user.checkLoose()){
-        gameOver("You Loose");
+}
+
+void GameWidget::checkListCardFrontTypes(){
+    listCardFrontTypes.clear();
+    QString path = QDir::currentPath() + "/Assets/";
+
+    QDir directory(path);
+
+    // Get a list of all the folders in the directory
+    QStringList folders = directory.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+
+    // Add the folder names to the list
+    foreach (QString folder, folders)
+    {
+        listCardFrontTypes.append(folder);
     }
+}
+
+
+void GameWidget::on_btnAddNewSkins_clicked()
+{
+
+    checkListCardFrontTypes();
+
+    int maxCardFolder = listCardFrontTypes.size();
+    QString creatingFolder = "png" + QString::number(maxCardFolder+1) + "/";
+    qInfo() << creatingFolder;
+    // Create a file dialog to let the user select the image files
+    QStringList imageFiles = QFileDialog::getOpenFileNames(this, tr("Select Images"), QString(), tr("Image Files (*.png)"));
+
+    // Get the path of the directory where you want to save the images
+    QString saveDirectory = QDir::currentPath() + "/Assets/" + creatingFolder;
+
+    // Create the directory if it doesn't exist
+    QDir().mkpath(saveDirectory);
+
+    // Copy the selected files to the save directory
+    foreach(QString imagePath, imageFiles)
+    {
+        // Get the filename of the image
+        QString imageName = QFileInfo(imagePath).fileName();
+
+        // Create a QFile object for the image file
+        QFile imageFile(imagePath);
+
+        // Set the path for the output file
+        QString savePath = saveDirectory + imageName;
+
+        // Create a QFile object for the output file
+        QFile outputFile(savePath);
+
+        // Open the image file for reading
+        if (imageFile.open(QIODevice::ReadOnly))
+        {
+            // Open the output file for writing
+            if (outputFile.open(QIODevice::WriteOnly))
+            {
+                // Copy the image data to the output file
+                outputFile.write(imageFile.readAll());
+
+                // Close the output file
+                outputFile.close();
+            }
+
+            // Close the image file
+            imageFile.close();
+        }
+    }
+
+
+
+}
+
+
+
+void GameWidget::on_btnChangeSkins_clicked()
+{
+    checkListCardFrontTypes();
+
+    bool ok;
+
+        QString item = QInputDialog::getItem(this, tr("QInputDialog::getItem()"),
+                                            tr("Card Types:"), listCardFrontTypes, 0, false, &ok);
+
+        if (ok && !item.isEmpty()){
+
+            path2 = "png" + QString::number(listCardFrontTypes.indexOf(item)+1);
+
+        }
 }
 

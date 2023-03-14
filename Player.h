@@ -32,15 +32,14 @@ public:
     }
 
     QString getPathToBackCardImg(){
-         return this ->pathToBackCardImg;
+        return this ->pathToBackCardImg;
     }
     void setPathToBackCardImg(QString pathToBackCardImg){
         this ->pathToBackCardImg = pathToBackCardImg;
     }
 
-    QString getAmountOfPoints(){
-
-        return QString::number(this ->amountOfPoints);
+    int getAmountOfPoints(){
+        return this ->amountOfPoints;
     }
     void setAmountOfPoints(int amountOfPoints){
         this ->amountOfPoints += amountOfPoints;
@@ -56,12 +55,8 @@ public:
         this ->playerBet = playerBet;
     }
 
-    bool checkLoose(){
-        if(this->amountOfPoints > 21){
-            return true;
-        }
-        else
-            return false;
+    bool checkLose(){
+        return this->amountOfPoints > 21;
     }
 
 };

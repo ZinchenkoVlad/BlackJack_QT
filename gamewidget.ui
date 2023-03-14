@@ -381,6 +381,32 @@ background-color: rgba(255, 255, 255, 0);</string>
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
+  <widget class="QPushButton" name="btnAddNewSkins">
+   <property name="geometry">
+    <rect>
+     <x>680</x>
+     <y>190</y>
+     <width>83</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Add new</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btnChangeSkins">
+   <property name="geometry">
+    <rect>
+     <x>680</x>
+     <y>260</y>
+     <width>91</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Change now</string>
+   </property>
+  </widget>
   <zorder>btnHit</zorder>
   <zorder>btnStand</zorder>
   <zorder>labelDealer1</zorder>
@@ -401,6 +427,8 @@ background-color: rgba(255, 255, 255, 0);</string>
   <zorder>label2</zorder>
   <zorder>label2_2</zorder>
   <zorder>labelPlayerBet</zorder>
+  <zorder>btnAddNewSkins</zorder>
+  <zorder>btnChangeSkins</zorder>
  </widget>
  <resources/>
  <connections/>
