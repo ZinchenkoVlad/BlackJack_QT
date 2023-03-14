@@ -110,6 +110,7 @@ void GameWidget::soundPlayer(QString path){
     music->setAudioOutput(audioOutput);
     music->setSource(QUrl::fromLocalFile(path));
     audioOutput->setVolume(50);
+    if(isMuted) audioOutput->setVolume(0);
     music->play();
 }
 
@@ -328,6 +329,7 @@ void GameWidget::on_btnStand_clicked()
     dealerMove();
 }
 
+
 void GameWidget::on_btnHit_clicked()
 {
     soundPlayer("qrc:/sound/Assets/sound/clickButton.mp3");
@@ -356,9 +358,20 @@ void GameWidget::on_btnHit_clicked()
 }
 
 
-
 void GameWidget::on_btnAddNewSkins_clicked()
 {
+    QString infoText = "Your cards must be in .png format\n "
+                       " 2_of_clubs\n 2_of_diamonds\n 2_of_hearts\n 2_of_spades\n 3_of_clubs\n\t...\n\n"
+                       " Jack = 11\n Queen = 12\n King = 13\n Ace = 14\n\n"
+                       "So, if we need King of diamonds,\nwe rename our file to 13_of_diamonds, and so on";
+    QMessageBox msgBox;
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.setWindowTitle("Important:");
+    msgBox.setText("This is examples, how you should name you files.");
+    msgBox.setInformativeText(infoText);
+    msgBox.exec();
+
+
     checkListCardFrontTypes();
 
     int maxCardFolder = listCardFrontTypes.size();
@@ -440,7 +453,6 @@ void GameWidget::on_btnChangeBack_clicked()
 
     if (ok && !item.isEmpty()){
         pathForBackImg = "back/" + item;
-        qInfo() << pathForBackImg;
     }
 }
 

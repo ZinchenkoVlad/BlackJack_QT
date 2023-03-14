@@ -2,10 +2,7 @@
 #define GAMEWIDGET_H
 
 #include <QWidget>
-#include <QLabel>
-#include <QPushButton>
 #include <QMessageBox>
-#include <list>
 #include <QRandomGenerator>
 #include <QPropertyAnimation>
 #include <QInputDialog>
@@ -13,7 +10,6 @@
 #include <QMediaPlayer>
 #include <QAudioOutput>
 #include <QFileDialog>
-#include <QResource>
 #include <QFileInfoList>
 
 #include "Player.h"
@@ -33,19 +29,23 @@ public:
 
     QString pathForFrontImg = "png1";
     QString pathForBackImg = "back/black_of_backside.png";
+
     ~GameWidget();
 
 private:
     Ui::GameWidget *ui; // Declare the ui member variable
 
-    bool firstTime = true;
-    std::list<QString> listOfUsedCards = {};
-    int countOfPressHit = 1;
-    int playerStartupBet = 25;
+    QStringList listOfUsedCards = {};
     QStringList listCardFrontTypes;
     QStringList listCardBackTypes;
+
+    int countOfPressHit = 1;
+    int playerStartupBet = 25;
+
+    bool firstTime = true;
     bool isMuted = false;
     bool frontOrBack = true;
+
 
     void startGame();
     void soundPlayer(QString path);
@@ -64,10 +64,8 @@ private:
 private slots:
     void on_btnStand_clicked();
     void on_btnHit_clicked();
-
     void on_btnMute_clicked();
     void on_btnFrontOrBack_clicked();
-
     void on_btnAddNewSkins_clicked();
     void on_btnChangeFront_clicked();
     void on_btnChangeBack_clicked();
