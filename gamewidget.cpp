@@ -337,12 +337,11 @@ void GameWidget::checkListCardFrontTypes(){
 
 void GameWidget::on_btnAddNewSkins_clicked()
 {
-
     checkListCardFrontTypes();
 
     int maxCardFolder = listCardFrontTypes.size();
     QString creatingFolder = "png" + QString::number(maxCardFolder+1) + "/";
-    qInfo() << creatingFolder;
+
     // Create a file dialog to let the user select the image files
     QStringList imageFiles = QFileDialog::getOpenFileNames(this, tr("Select Images"), QString(), tr("Image Files (*.png)"));
 
