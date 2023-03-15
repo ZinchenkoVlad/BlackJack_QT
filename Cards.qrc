@@ -2,6 +2,6 @@
     <qresource prefix="/sound">
         <file>Assets/sound/clickButton.mp3</file>
         <file>Assets/sound/flipCard.mp3</file>
-        <file>Assets/sound/backGround.mp3</file>
+        <file>Assets/sound/game-setting-fantasy.mp3</file>
     </qresource>
 </RCC>

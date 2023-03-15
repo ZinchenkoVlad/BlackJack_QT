@@ -14,12 +14,11 @@ GameWidget::GameWidget(QWidget *parent)
     audioOutput1 = new QAudioOutput;
 
     backgroundMusic->setAudioOutput(audioOutput1);
-    backgroundMusic->setSource(QUrl::fromLocalFile("qrc:/sound/Assets/sound/backGround.mp3"));
-    audioOutput1->setVolume(50);
+    backgroundMusic->setSource(QUrl::fromLocalFile("qrc:/sound/Assets/sound/game-setting-fantasy.mp3"));
+    audioOutput1->setVolume(5);
 
     backgroundMusic->setLoops(QMediaPlayer::Infinite);
     backgroundMusic->play();
-
 
     startGame();
 }
@@ -275,18 +274,20 @@ void GameWidget::gameOver(QString text){
     else if (text == "You Lose"){
         user.setAmountOfMoney(user.getPlayerBet() * -1);
     }
+    QMessageBox msgBox1;
+    QPushButton *connectButton = msgBox1.addButton(tr("Play again"), QMessageBox::ActionRole);
+    QPushButton *exitButton = msgBox1.addButton(tr("Exit"), QMessageBox::ActionRole);
+    msgBox1.setWindowTitle("Information");
+    msgBox1.setText(text);
+    msgBox1.setInformativeText("Your bank now is: " + QString::number(user.getAmountOfMoney()));
+    msgBox1.exec();
 
-    QPushButton *connectButton = msgBox.addButton(tr("Play again"), QMessageBox::ActionRole);
-    QPushButton *exitButton = msgBox.addButton(tr("Exit"), QMessageBox::ActionRole);
-    msgBox.setWindowTitle("Information");
-    msgBox.setText(text);
-    msgBox.setInformativeText("Your bank now is: " + QString::number(user.getAmountOfMoney()));
-    msgBox.exec();
-
-    if (msgBox.clickedButton() == connectButton) {
+    if (msgBox1.clickedButton() == connectButton) {
+        backgroundMusic->setSource(QUrl::fromLocalFile("qrc:/sound/Assets/sound/game-setting-fantasy.mp3"));
+        backgroundMusic->play();
         startGame();
     }
-    else if (msgBox.clickedButton() == exitButton) {
+    else if (msgBox1.clickedButton() == exitButton) {
         QCoreApplication::quit();
     }
 }
