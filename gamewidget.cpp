@@ -21,7 +21,6 @@ GameWidget::GameWidget(QWidget *parent)
     backgroundMusic->play();
 
 
-
     startGame();
 }
 

@@ -17,7 +17,7 @@ public:
         this ->amountOfPoints = 0;
     }
 
-    int getAmountOfMoney(){
+    int getAmountOfMoney() const {
         return this ->amountOfMoney;
     }
     void setAmountOfMoney(int amountOfMoney){
@@ -27,18 +27,18 @@ public:
     void setAmountOfBackPoints(int amountOfBackPoints){
         this ->amountOfBackPoints = amountOfBackPoints;
     }
-    int getAmountOfBackPoints(){
+    int getAmountOfBackPoints() const {
         return this ->amountOfBackPoints;
     }
 
-    QString getPathToBackCardImg(){
+    QString getPathToBackCardImg() const {
         return this ->pathToBackCardImg;
     }
     void setPathToBackCardImg(QString pathToBackCardImg){
         this ->pathToBackCardImg = pathToBackCardImg;
     }
 
-    int getAmountOfPoints(){
+    int getAmountOfPoints() const {
         return this ->amountOfPoints;
     }
     void setAmountOfPoints(int amountOfPoints){
@@ -48,7 +48,7 @@ public:
         }
     }
 
-    int getPlayerBet(){
+    int getPlayerBet() const {
          return this ->playerBet;
     }
     void setPlayerBet(int playerBet){
