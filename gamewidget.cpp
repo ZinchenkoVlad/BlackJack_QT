@@ -9,7 +9,6 @@ GameWidget::GameWidget(QWidget *parent)
 {
     ui->setupUi(this); // Load the UI from the .ui file
 
-    //soundPlayer();
     backgroundMusic = new QMediaPlayer;
     audioOutput1 = new QAudioOutput;
 
@@ -138,7 +137,7 @@ void GameWidget::makeBet(){
 
     if (ok) {
         if (playerMoney == 0) {
-            messageInfo("Information", "Your bank is empty.\nYou must leave.");
+            messageInfo("Information", "Your bank is empty.\nYou must leave.", "");
             QCoreApplication::quit();
             return;
         }
@@ -149,7 +148,7 @@ void GameWidget::makeBet(){
     }
     else {
         if(firstTimeForMakeBet){
-            messageInfo("Information", "You should play, do not leave so fast.");
+            messageInfo("Information", "You should play, do not leave so fast.", "");
             makeBet();
             return;
         }
@@ -328,8 +327,7 @@ void GameWidget::messageInfo(QString title, QString text, QString informativeTex
     msgBox.setIcon(QMessageBox::Information);
     msgBox.setWindowTitle(title);
     msgBox.setText(text);
-    if(!informativeText.isEmpty())
-        msgBox.setInformativeText(informativeText);
+    msgBox.setInformativeText(informativeText);
     msgBox.exec();
 }
 
@@ -464,7 +462,7 @@ void GameWidget::on_btnChangeBack_clicked()
     if (ok && !item.isEmpty()){
         updatedPathForBackImg = "back/" + item;
 
-        messageInfo("Important", "Changes will take effect with a new game.");
+        messageInfo("Important", "Changes will take effect with a new game.", "");
     }
 }
 
@@ -480,7 +478,7 @@ void GameWidget::on_btnChangeFront_clicked()
     if (ok && !item.isEmpty()){
         updatedPathForFrontImg = "png" + QString::number(listCardFrontTypes.indexOf(item)+1);
 
-        messageInfo("Important", "Changes will take effect with a new game.");
+        messageInfo("Important", "Changes will take effect with a new game.", "");
     }
 }
 

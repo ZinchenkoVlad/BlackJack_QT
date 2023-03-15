@@ -49,7 +49,7 @@ public:
     }
 
     int getPlayerBet() const {
-         return this ->playerBet;
+        return this ->playerBet;
     }
     void setPlayerBet(int playerBet){
         this ->playerBet = playerBet;

@@ -11,6 +11,7 @@
 #include <QAudioOutput>
 #include <QFileDialog>
 #include <QFileInfoList>
+#include <QThreadPool>
 
 #include "Player.h"
 #include "Card.h"
@@ -62,7 +63,7 @@ private:
     void gameOver(QString text);
     void checkListCardFrontTypes();
     void checkListCardBackTypes();
-    void messageInfo(QString title, QString text, QString informativeText = "");
+    void messageInfo(QString title, QString text, QString informativeText);
 
 
 private slots:
