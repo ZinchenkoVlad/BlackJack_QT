@@ -62,6 +62,7 @@ private:
     void gameOver(QString text);
     void checkListCardFrontTypes();
     void checkListCardBackTypes();
+    void messageInfo(QString title, QString text, QString informativeText = "");
 
 
 private slots:
@@ -92,6 +93,8 @@ private:
     QAudioOutput* audioOutput1;
     QMediaPlayer* music;
     QAudioOutput* audioOutput;
+
+    QMessageBox msgBox;
 };
 
 

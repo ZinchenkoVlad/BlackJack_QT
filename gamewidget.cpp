@@ -89,8 +89,6 @@ void GameWidget::reset(){
 
     pathForFrontImg = updatedPathForFrontImg;
     pathForBackImg = updatedPathForBackImg;
-
-
 }
 
 void GameWidget::initAnimation(){
@@ -142,10 +140,7 @@ void GameWidget::makeBet(){
 
     if (ok) {
         if (playerMoney == 0) {
-            QMessageBox msgBox;
-            msgBox.setWindowTitle("Result:");
-            msgBox.setInformativeText("Your bank is empty.\nYou must leave.");
-            msgBox.exec();
+            messageInfo("Information", "Your bank is empty.\nYou must leave.");
             QCoreApplication::quit();
             return;
         }
@@ -156,17 +151,12 @@ void GameWidget::makeBet(){
     }
     else {
         if(firstTimeForMakeBet){
-            QMessageBox msgBox;
-            msgBox.setWindowTitle("Result:");
-            msgBox.setInformativeText("You should play, do not leave so fast.");
-            msgBox.exec();
+            messageInfo("Information", "You should play, do not leave so fast.");
             makeBet();
             return;
         }
         QCoreApplication::quit();
     }
-
-
 }
 
 std::tuple <QString, QString> GameWidget::randomCardGenerator(){
@@ -287,10 +277,9 @@ void GameWidget::gameOver(QString text){
         user.setAmountOfMoney(user.getPlayerBet() * -1);
     }
 
-    QMessageBox msgBox;
     QPushButton *connectButton = msgBox.addButton(tr("Play again"), QMessageBox::ActionRole);
     QPushButton *exitButton = msgBox.addButton(tr("Exit"), QMessageBox::ActionRole);
-    msgBox.setWindowTitle("Result:");
+    msgBox.setWindowTitle("Information");
     msgBox.setText(text);
     msgBox.setInformativeText("Your bank now is: " + QString::number(user.getAmountOfMoney()));
     msgBox.exec();
@@ -335,7 +324,14 @@ void GameWidget::checkListCardBackTypes(){
     }
 }
 
-
+void GameWidget::messageInfo(QString title, QString text, QString informativeText){
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.setWindowTitle(title);
+    msgBox.setText(text);
+    if(!informativeText.isEmpty())
+        msgBox.setInformativeText(informativeText);
+    msgBox.exec();
+}
 
 // Buttons
 void GameWidget::on_btnStand_clicked()
@@ -382,12 +378,8 @@ void GameWidget::on_btnAddNewSkins_clicked()
                        " 2_of_clubs\n 2_of_diamonds\n 2_of_hearts\n 2_of_spades\n 3_of_clubs\n\t...\n\n"
                        " Jack = 11\n Queen = 12\n King = 13\n Ace = 14\n\n"
                        "So, if we need King of diamonds,\nwe rename our file to 13_of_diamonds, and so on";
-    QMessageBox msgBox;
-    msgBox.setIcon(QMessageBox::Information);
-    msgBox.setWindowTitle("Important:");
-    msgBox.setText("This is examples, how you should name you files.");
-    msgBox.setInformativeText(infoText);
-    msgBox.exec();
+    messageInfo("Important", "This is examples, how you should name you files.", infoText);
+
 
 
     checkListCardFrontTypes();
@@ -472,11 +464,7 @@ void GameWidget::on_btnChangeBack_clicked()
     if (ok && !item.isEmpty()){
         updatedPathForBackImg = "back/" + item;
 
-        QMessageBox msgBox;
-        msgBox.setIcon(QMessageBox::Information);
-        msgBox.setWindowTitle("Important:");
-        msgBox.setText("Changes will take effect with a new game.");
-        msgBox.exec();
+        messageInfo("Important", "Changes will take effect with a new game.");
     }
 }
 
@@ -492,11 +480,7 @@ void GameWidget::on_btnChangeFront_clicked()
     if (ok && !item.isEmpty()){
         updatedPathForFrontImg = "png" + QString::number(listCardFrontTypes.indexOf(item)+1);
 
-        QMessageBox msgBox;
-        msgBox.setIcon(QMessageBox::Information);
-        msgBox.setWindowTitle("Important:");
-        msgBox.setText("Changes will take effect with a new game.");
-        msgBox.exec();
+        messageInfo("Important", "Changes will take effect with a new game.");
     }
 }
 
