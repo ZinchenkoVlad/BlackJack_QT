@@ -27,8 +27,10 @@ class GameWidget : public QWidget
 public:
     explicit GameWidget(QWidget *parent = nullptr);
 
-    QString pathForFrontImg = "png1";
-    QString pathForBackImg = "back/black_of_backside.png";
+    QString pathForFrontImg;
+    QString pathForBackImg;
+    QString updatedPathForFrontImg = "png1";
+    QString updatedPathForBackImg = "back/black_of_backside.png";
 
     ~GameWidget();
 
@@ -43,6 +45,7 @@ private:
     int playerStartupBet = 25;
 
     bool firstTime = true;
+    bool firstTimeForMakeBet = true;
     bool isMuted = false;
     bool frontOrBack = true;
 

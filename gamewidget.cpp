@@ -36,9 +36,8 @@ GameWidget::~GameWidget()
 
 void GameWidget::startGame()
 {
-    // Reset score and enable button
-    reset();
     makeBet();
+    reset();
 
     Card a0(randomCardGenerator(), pathForFrontImg, pathForBackImg, true);
     Card a1(randomCardGenerator(), pathForFrontImg);
@@ -86,6 +85,11 @@ void GameWidget::reset(){
     initAnimation();
 
     ui->labelPlayerBet->setText("Your bet: " + QString::number(user.getPlayerBet()));
+    firstTimeForMakeBet = false;
+
+    pathForFrontImg = updatedPathForFrontImg;
+    pathForBackImg = updatedPathForBackImg;
+
 
 }
 
@@ -125,12 +129,17 @@ void GameWidget::makeBet(){
     dialog.setIntRange(1, playerMoney);
     dialog.setIntStep(1);
     dialog.setIntValue(playerStartupBet);
-    dialog.setOkButtonText("OK");
+    dialog.setOkButtonText("Place Bet");
     dialog.setCancelButtonText("Exit");
 
     // Show the dialog and get the user's bet
     bool ok = dialog.exec();
     int playerBet = dialog.intValue();
+
+    if(firstTimeForMakeBet){
+        dialog.setOptions(QInputDialog::NoButtons);
+    }
+
     if (ok) {
         if (playerMoney == 0) {
             QMessageBox msgBox;
@@ -146,8 +155,17 @@ void GameWidget::makeBet(){
         }
     }
     else {
+        if(firstTimeForMakeBet){
+            QMessageBox msgBox;
+            msgBox.setWindowTitle("Result:");
+            msgBox.setInformativeText("You should play, do not leave so fast.");
+            msgBox.exec();
+            makeBet();
+            return;
+        }
         QCoreApplication::quit();
     }
+
 
 }
 
@@ -452,7 +470,13 @@ void GameWidget::on_btnChangeBack_clicked()
                                         tr("Card Types:"), listCardBackTypes, 0, false, &ok);
 
     if (ok && !item.isEmpty()){
-        pathForBackImg = "back/" + item;
+        updatedPathForBackImg = "back/" + item;
+
+        QMessageBox msgBox;
+        msgBox.setIcon(QMessageBox::Information);
+        msgBox.setWindowTitle("Important:");
+        msgBox.setText("Changes will take effect with a new game.");
+        msgBox.exec();
     }
 }
 
@@ -466,7 +490,13 @@ void GameWidget::on_btnChangeFront_clicked()
                                         tr("Card Types:"), listCardFrontTypes, 0, false, &ok);
 
     if (ok && !item.isEmpty()){
-        pathForFrontImg = "png" + QString::number(listCardFrontTypes.indexOf(item)+1);
+        updatedPathForFrontImg = "png" + QString::number(listCardFrontTypes.indexOf(item)+1);
+
+        QMessageBox msgBox;
+        msgBox.setIcon(QMessageBox::Information);
+        msgBox.setWindowTitle("Important:");
+        msgBox.setText("Changes will take effect with a new game.");
+        msgBox.exec();
     }
 }
 
