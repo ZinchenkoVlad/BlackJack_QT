@@ -9,6 +9,11 @@ GameWidget::GameWidget(QWidget *parent)
 {
     ui->setupUi(this); // Load the UI from the .ui file
 
+    QPixmap pixmapMute(":/icons/Assets/soundUnmute.png");
+    QIcon ButtonIconMute(pixmapMute);
+    ui->btnMute->setIcon(ButtonIconMute);
+    ui->btnMute->setIconSize(QSize(35, 35));
+
     backgroundMusic = new QMediaPlayer;
     audioOutput1 = new QAudioOutput;
 
@@ -372,11 +377,26 @@ void GameWidget::on_btnHit_clicked()
 
 void GameWidget::on_btnAddNewSkins_clicked()
 {
-    QString infoText = "Your cards must be in .png format\n "
-                       " 2_of_clubs\n 2_of_diamonds\n 2_of_hearts\n 2_of_spades\n 3_of_clubs\n\t...\n\n"
-                       " Jack = 11\n Queen = 12\n King = 13\n Ace = 14\n\n"
-                       "So, if we need King of diamonds,\nwe rename our file to 13_of_diamonds, and so on";
-    messageInfo("Important", "This is examples, how you should name you files.", infoText);
+
+    QMessageBox msgBox2;
+    QPushButton *connectButton = msgBox2.addButton(tr("Front img"), QMessageBox::ActionRole);
+    QPushButton *exitButton = msgBox2.addButton(tr("Back img"), QMessageBox::ActionRole);
+    msgBox2.setWindowTitle("Make choose");
+    msgBox2.setText("Choose which type of images you watn to add:");
+    msgBox2.exec();
+
+    if (msgBox2.clickedButton() == connectButton) {
+        frontOrBack = true;
+        QString infoText = "Your cards must be in .png format\n "
+                           " 2_of_clubs\n 2_of_diamonds\n 2_of_hearts\n 2_of_spades\n 3_of_clubs\n\t...\n\n"
+                           " Jack = 11\n Queen = 12\n King = 13\n Ace = 14\n\n"
+                           "So, if we need King of diamonds,\nwe rename our file to 13_of_diamonds, and so on";
+        messageInfo("Important", "This is examples, how you should name you files.", infoText);
+    }
+    else if (msgBox2.clickedButton() == exitButton) {
+        frontOrBack = false;
+    }
+
 
 
 
@@ -438,25 +458,24 @@ void GameWidget::on_btnMute_clicked()
     isMuted = !isMuted;
     audioOutput1->setMuted(isMuted);
     audioOutput->setMuted(isMuted);
-    if(!isMuted) ui->btnMute->setText("Mute");
-    else    ui->btnMute->setText("Unmute");
+
+    QPixmap pixmapMute(":/icons/Assets/soundUnmute.png");
+    QPixmap pixmapUnMute(":/icons/Assets/soundMute.png");
+    QIcon ButtonIconMute(pixmapMute);
+    QIcon ButtonIconUnMute(pixmapUnMute);
+
+    if(!isMuted) ui->btnMute->setIcon(ButtonIconMute);
+    else    ui->btnMute->setIcon(ButtonIconUnMute);
+    ui->btnMute->setIconSize(QSize(35, 35));
 }
 
 
-void GameWidget::on_btnFrontOrBack_clicked()
-{
-    frontOrBack = !frontOrBack;
-    if(frontOrBack) ui->btnFrontOrBack->setText("Front");
-    else    ui->btnFrontOrBack->setText("Back");
-}
-
-
-void GameWidget::on_btnChangeBack_clicked()
+void GameWidget::changeBack()
 {
     checkListCardBackTypes();
     bool ok;
 
-    QString item = QInputDialog::getItem(this, tr("QInputDialog::getItem()"),
+    QString item = QInputDialog::getItem(this, tr("Choose back img"),
                                         tr("Card Types:"), listCardBackTypes, 0, false, &ok);
 
     if (ok && !item.isEmpty()){
@@ -467,18 +486,36 @@ void GameWidget::on_btnChangeBack_clicked()
 }
 
 
-void GameWidget::on_btnChangeFront_clicked()
+void GameWidget::changeFront()
 {
     checkListCardFrontTypes();
     bool ok;
 
-    QString item = QInputDialog::getItem(this, tr("QInputDialog::getItem()"),
+    QString item = QInputDialog::getItem(this, tr("Choose front img"),
                                         tr("Card Types:"), listCardFrontTypes, 0, false, &ok);
 
     if (ok && !item.isEmpty()){
         updatedPathForFrontImg = "png" + QString::number(listCardFrontTypes.indexOf(item)+1);
 
         messageInfo("Important", "Changes will take effect with a new game.", "");
+    }
+}
+
+
+void GameWidget::on_btnChangeImg_clicked()
+{
+    QMessageBox msgBox3;
+    QPushButton *connectButton = msgBox3.addButton(tr("Front img"), QMessageBox::ActionRole);
+    QPushButton *exitButton = msgBox3.addButton(tr("Back img"), QMessageBox::ActionRole);
+    msgBox3.setWindowTitle("Make choose");
+    msgBox3.setText("Choose which type of images you watn to change:");
+    msgBox3.exec();
+
+    if (msgBox3.clickedButton() == connectButton) {
+        changeFront();
+    }
+    else if (msgBox3.clickedButton() == exitButton) {
+        changeBack();
     }
 }
 

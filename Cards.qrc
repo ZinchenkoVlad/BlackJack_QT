@@ -4,4 +4,8 @@
         <file>Assets/sound/flipCard.mp3</file>
         <file>Assets/sound/game-setting-fantasy.mp3</file>
     </qresource>
+    <qresource prefix="/icons">
+        <file>Assets/soundMute.png</file>
+        <file>Assets/soundUnmute.png</file>
+    </qresource>
 </RCC>

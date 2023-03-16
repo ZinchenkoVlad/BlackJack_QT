@@ -12,6 +12,7 @@
 #include <QFileDialog>
 #include <QFileInfoList>
 #include <QThreadPool>
+#include <QIcon>
 
 #include "Player.h"
 #include "Card.h"
@@ -31,7 +32,7 @@ public:
     QString pathForFrontImg;
     QString pathForBackImg;
     QString updatedPathForFrontImg = "png1";
-    QString updatedPathForBackImg = "back/black_of_backside.png";
+    QString updatedPathForBackImg = "back/back1.png";
 
     ~GameWidget();
 
@@ -64,17 +65,16 @@ private:
     void checkListCardFrontTypes();
     void checkListCardBackTypes();
     void messageInfo(QString title, QString text, QString informativeText);
+    void changeFront();
+    void changeBack();
 
 
 private slots:
     void on_btnStand_clicked();
     void on_btnHit_clicked();
     void on_btnMute_clicked();
-    void on_btnFrontOrBack_clicked();
     void on_btnAddNewSkins_clicked();
-    void on_btnChangeFront_clicked();
-    void on_btnChangeBack_clicked();
-
+    void on_btnChangeImg_clicked();
 
 private:
     QPropertyAnimation* animation1 ;
@@ -96,6 +96,14 @@ private:
     QAudioOutput* audioOutput;
 
     QMessageBox msgBox;
+
+    QString filename;
+    QString filename1;
+    QPixmap pixmapMute;
+    QPixmap pixmapUnMute;
+    QIcon ButtonIconMute;
+    QIcon ButtonIconUnMu;
+
 };
 
 
