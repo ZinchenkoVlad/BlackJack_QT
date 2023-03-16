@@ -91,6 +91,9 @@ void GameWidget::reset(){
 
     pathForFrontImg = updatedPathForFrontImg;
     pathForBackImg = updatedPathForBackImg;
+
+
+    qInfo() << "\n\n";
 }
 
 void GameWidget::initAnimation(){

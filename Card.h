@@ -25,7 +25,6 @@ public:
     }
 
 
-
     QString getPathToCardImg() const {
         return pathToCardImg;
     }
@@ -55,7 +54,7 @@ public:
         default: point = cardNum; break;
         }
 
-        if(point == 14 && playerPoints > 10){
+        if(point == 11 && playerPoints > 10){
             point = 1;
         }
 
