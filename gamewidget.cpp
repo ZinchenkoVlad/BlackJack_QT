@@ -23,6 +23,10 @@ GameWidget::GameWidget(QWidget *parent)
 
     backgroundMusic->setLoops(QMediaPlayer::Infinite);
     backgroundMusic->play();
+    initAnimation();
+
+    music = new QMediaPlayer;
+    audioOutput = new QAudioOutput;
 
     startGame();
 }
@@ -84,7 +88,7 @@ void GameWidget::reset(){
     ui->btnHit->setEnabled(true);
     ui->btnStand->setEnabled(true);
 
-    initAnimation();
+
 
     ui->labelPlayerBet->setText("Your bet: " + QString::number(user.getPlayerBet()));
     firstTimeForMakeBet = false;
@@ -112,8 +116,6 @@ void GameWidget::initAnimation(){
 }
 
 void GameWidget::soundPlayer(QString path){
-    music = new QMediaPlayer;
-    audioOutput = new QAudioOutput;
     music->setAudioOutput(audioOutput);
     music->setSource(QUrl::fromLocalFile(path));
     audioOutput->setVolume(50);
@@ -139,9 +141,6 @@ void GameWidget::makeBet(){
     bool ok = dialog.exec();
     int playerBet = dialog.intValue();
 
-    if(firstTimeForMakeBet){
-        dialog.setOptions(QInputDialog::NoButtons);
-    }
 
     if (ok) {
         if (playerMoney == 0) {
