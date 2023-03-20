@@ -1,7 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>Assets/sound/backgroung.mp3</file>
-        <file>Assets/sound/clickButton.mp3</file>
-        <file>Assets/sound/flipCard.mp3</file>
-    </qresource>
-</RCC>
