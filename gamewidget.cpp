@@ -14,19 +14,17 @@ GameWidget::GameWidget(QWidget *parent)
     ui->btnMute->setIcon(ButtonIconMute);
     ui->btnMute->setIconSize(QSize(35, 35));
 
+    music = new QMediaPlayer;
+    audioOutput = new QAudioOutput;
+
     backgroundMusic = new QMediaPlayer;
     audioOutput1 = new QAudioOutput;
-
     backgroundMusic->setAudioOutput(audioOutput1);
     backgroundMusic->setSource(QUrl::fromLocalFile("qrc:/sound/Assets/sound/game-setting-fantasy.mp3"));
     audioOutput1->setVolume(5);
-
     backgroundMusic->setLoops(QMediaPlayer::Infinite);
     backgroundMusic->play();
     initAnimation();
-
-    music = new QMediaPlayer;
-    audioOutput = new QAudioOutput;
 
     startGame();
 }
@@ -65,7 +63,6 @@ void GameWidget::startGame()
 }
 
 void GameWidget::reset(){
-    countOfPressHit = 1;
     ui->labelPlayer1->clear();
     ui->labelPlayer2->clear();
     ui->labelPlayer3->clear();
@@ -84,20 +81,16 @@ void GameWidget::reset(){
 
     ui->labelDealerScore->setText(QString::number(user.getAmountOfPoints()));
     ui->labelPlayerScore->setText(QString::number(user.getAmountOfPoints()));
+    ui->labelPlayerBet->setText("Your bet: " + QString::number(user.getPlayerBet()));
 
     ui->btnHit->setEnabled(true);
     ui->btnStand->setEnabled(true);
 
-
-
-    ui->labelPlayerBet->setText("Your bet: " + QString::number(user.getPlayerBet()));
+    countOfPressHit = 1;
     firstTimeForMakeBet = false;
 
     pathForFrontImg = updatedPathForFrontImg;
     pathForBackImg = updatedPathForBackImg;
-
-
-    qInfo() << "\n\n";
 }
 
 void GameWidget::initAnimation(){
@@ -469,6 +462,7 @@ void GameWidget::on_btnMute_clicked()
     if(!isMuted) ui->btnMute->setIcon(ButtonIconMute);
     else    ui->btnMute->setIcon(ButtonIconUnMute);
     ui->btnMute->setIconSize(QSize(35, 35));
+
 }
 
 
