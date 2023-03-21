@@ -2,7 +2,17 @@ Black Jack game.
 C++ 
 QT 6.4.2
 
+
+---
+
+To launch an app you should copy "Asset/" folder from "builded_app.zip" to release/debug folder, where the app is launching. Or launch .exe from "builded_app.zip".
+
+---
+
+
+
 Game:
+
 ![image](https://user-images.githubusercontent.com/75172188/225592469-f7463622-fc0a-4eac-be6e-8c164df56bcc.png)
 
 ![image](https://user-images.githubusercontent.com/75172188/225592565-c2831d28-bf18-4984-ab25-3e681eb76101.png)
